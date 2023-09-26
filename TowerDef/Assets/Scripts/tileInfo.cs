@@ -52,6 +52,6 @@ public class tileInfo : MonoBehaviour
 
     private void Start()
     {
-        tilePos = transform.position;
+        tilePos = transform.position + new Vector3(0, 0, -3);
     }
 }

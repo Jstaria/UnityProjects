@@ -9,11 +9,12 @@ public class EnemySpawner : MonoBehaviour
     private List<GameObject> enemies = new List<GameObject>();
 
     internal Grid Grid { get; set; }
+    internal List<GameObject> Enemies { get { return enemies; } }
 
     // Start is called before the first frame update
     void Start()
     {
-        enemies.Add(Instantiate(enemy, Grid.Path[0].tilePos, Quaternion.identity));
+        enemies.Add(Instantiate(enemy, Grid.Path[0].tilePos + new Vector3(0, 0, -3), Quaternion.identity));
         enemies[0].GetComponent<EnemyMovement>().Path = Grid.Path;
     }
 

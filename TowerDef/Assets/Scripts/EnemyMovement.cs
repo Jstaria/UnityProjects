@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    private float speed = .5f;
+    private float speed = 40f;
     private int count;
 
     internal bool IsFinished { get; private set; }
@@ -23,11 +23,11 @@ public class EnemyMovement : MonoBehaviour
     {
         if (Path == null) { return; }
 
-        if (count == Path.Count) { IsFinished = true;  return; }
+        if (count == Path.Count) { gameObject.SetActive(false); IsFinished = true;  return; }
 
         if (transform.position != Path[count].tilePos)
         {
-            transform.position = Vector3.Lerp(transform.position, Path[count].tilePos, speed);
+            transform.position = Vector3.Lerp(transform.position, Path[count].tilePos, speed * Time.deltaTime);
         }
         else if (transform.position == Path[count].tilePos)
         {

@@ -14,7 +14,6 @@ public class Grid : MonoBehaviour
 
     private List<tileInfo> path;
     private GameObject[,] tileMap;
-    private bool doneGenerating;
 
     internal List<tileInfo> Path { get { return path; } }
 
@@ -30,7 +29,15 @@ public class Grid : MonoBehaviour
 
     private void Update()
     {
+        if (enemySpawner.GetComponent <EnemySpawner>().Enemies.Count == 0)
+        {
+            CreateBoard();
 
+            SetUpBoard();
+
+            enemySpawner = Instantiate(enemySpawner);
+            enemySpawner.GetComponent<EnemySpawner>().Grid = this;
+        }
     }
 
     private void SetUpBoard()
@@ -134,7 +141,6 @@ public class Grid : MonoBehaviour
 
         // Last tile becomes the ending tile
         tileMap[path[path.Count - 1].x, path[path.Count - 1].y].GetComponent<tileInfo>().TileState = TileState.End;
-        doneGenerating = true;
     }
 
     private void CreateBoard()
