@@ -15,6 +15,8 @@ public class tileInfo : MonoBehaviour
     [SerializeField] SpriteRenderer tileObj;
     [SerializeField] TileState currentState;
     
+    internal Vector3 tilePos { get; set; }
+
     internal TileState TileState 
     { 
         get 
@@ -47,4 +49,9 @@ public class tileInfo : MonoBehaviour
     }
     internal int x { get; set; }
     internal int y { get; set; }
+
+    private void Start()
+    {
+        tilePos = transform.position;
+    }
 }

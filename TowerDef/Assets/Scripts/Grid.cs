@@ -10,28 +10,27 @@ public class Grid : MonoBehaviour
     [SerializeField] private GameObject tile;
     [SerializeField] private float tileScale;
     [SerializeField] private int maxPathLength;
+    [SerializeField] private GameObject enemySpawner;
 
     private List<tileInfo> path;
     private GameObject[,] tileMap;
     private bool doneGenerating;
+
+    internal List<tileInfo> Path { get { return path; } }
 
     void Start()
     {
         CreateBoard();
 
         SetUpBoard();
+
+        enemySpawner = Instantiate(enemySpawner);
+        enemySpawner.GetComponent<EnemySpawner>().Grid = this;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && doneGenerating)
-        {
-            doneGenerating = false;
 
-            CreateBoard();
-
-            SetUpBoard();
-        }
     }
 
     private void SetUpBoard()

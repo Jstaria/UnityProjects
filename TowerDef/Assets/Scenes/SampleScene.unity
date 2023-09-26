@@ -155,8 +155,9 @@ MonoBehaviour:
   xLength: 32
   yLength: 18
   tile: {fileID: 6410767452739018739, guid: 241e940a9dbb0a84f8d1eeae8767b4a0, type: 3}
-  maxPathLength: 100
   tileScale: 0.5
+  maxPathLength: 100
+  enemySpawner: {fileID: 1029162341366080527, guid: 0eb908f33bcc570479dd2300b58470a9, type: 3}
 --- !u!4 &219995960
 Transform:
   m_ObjectHideFlags: 0
