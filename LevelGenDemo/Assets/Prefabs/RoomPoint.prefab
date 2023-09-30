@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6553328992764261717}
   - component: {fileID: 8993188863517915817}
+  - component: {fileID: 4107355599484725457}
   m_Layer: 0
   m_Name: RoomPoint
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8993188863517915817
 SpriteRenderer:
@@ -84,3 +85,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4107355599484725457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 576879923113124096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 152ffdf9a3586fa409d916ef484fd4a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomFloor: {fileID: 8995685650263694327, guid: 2f9a21fde955392459edf56310d2d599, type: 3}

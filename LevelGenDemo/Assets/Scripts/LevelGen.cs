@@ -16,10 +16,10 @@ public class LevelGen : MonoBehaviour
     [SerializeField][Range(1, 100)] private int numberOfRooms = 5;
 
     [Header("Room")]
-    [SerializeField][Range(5, 15)] private int maxRoomWidth = 10;
-    [SerializeField][Range(5, 15)] private int maxRoomHeight = 10;
-    [SerializeField][Range(5, 10)] private int minRoomWidth = 10;
-    [SerializeField][Range(5, 10)] private int minRoomHeight = 10;
+    [SerializeField][Range(4, 20)] private int maxRoomWidth = 10;
+    [SerializeField][Range(4, 20)] private int maxRoomHeight = 10;
+    [SerializeField][Range(4, 10)] private int minRoomWidth = 10;
+    [SerializeField][Range(4, 10)] private int minRoomHeight = 10;
 
     // The minimum space between room spawns
     [SerializeField] private float minDistance;
@@ -29,7 +29,7 @@ public class LevelGen : MonoBehaviour
     private int roomSpawnTries = 0;
     private int trueNumberRooms;
     private List<GameObject> roomPoints = new List<GameObject>();
-    private List<GameObject> rooms = new List<GameObject>();
+    private int currentRoomIndex = 0;
     private Transform parentContainer;
 
     private void Start()
@@ -51,15 +51,15 @@ public class LevelGen : MonoBehaviour
         else
         {
             numberOfRooms = trueNumberRooms;
+            currentRoomIndex = 0;
 
             for (int i = 0; i < roomPoints.Count; i++)
             {
+                roomPoints[i].GetComponent<RoomGen>().BeDestroyed();
                 GameObject.Destroy(roomPoints[i]);
-                GameObject.Destroy(rooms[i]);
             }
 
             roomPoints.Clear();
-            rooms.Clear();
         }
     }
 
@@ -96,10 +96,9 @@ public class LevelGen : MonoBehaviour
         // Destroys any excess rooms, mainly for visual/debugging purposes, pretty to look at
         else if (roomPoints.Count > numberOfRooms)
         {
+            roomPoints[roomPoints.Count - 1].GetComponent<RoomGen>().BeDestroyed();
             GameObject.Destroy(roomPoints[roomPoints.Count - 1]);
             roomPoints.RemoveAt(roomPoints.Count - 1);
-            GameObject.Destroy(rooms[rooms.Count - 1]);
-            rooms.RemoveAt(rooms.Count - 1);
         }
     }
 
@@ -128,59 +127,54 @@ public class LevelGen : MonoBehaviour
     private void SpawnRooms()
     {
         if (roomPoints.Count != numberOfRooms) { return; }
-        if (rooms.Count == numberOfRooms) { return; }
 
-        if (rooms.Count != roomPoints.Count)
+        if (currentRoomIndex == numberOfRooms) { return; }
+
+        int ranWidth = Random.Range(minRoomWidth / 2, maxRoomWidth / 2 + 1) * 2;
+        int ranHeight = Random.Range(minRoomHeight / 2, maxRoomHeight / 2 + 1) * 2;
+            
+        int stuckCount = 0;
+
+        if (currentRoomIndex != 0)
         {
-            int ranWidth = Random.Range(minRoomWidth, maxRoomWidth + 1);
-            int ranHeight = Random.Range(minRoomHeight, maxRoomHeight + 1);
-
-            if (rooms.Count != 0)
+            // I dont think check for overlap is currently working as I intended
+            while (CheckOverlap(ranWidth, ranHeight))
             {
-                int stuckCount = 0;
+                ranWidth = Random.Range(minRoomWidth / 2, maxRoomWidth / 2 + 1) * 2;
+                ranHeight = Random.Range(minRoomHeight / 2, maxRoomHeight / 2 + 1) * 2;
 
-                // I dont think check for overlap is currently workin gas I intended
-                while (CheckOverlap(ranWidth, ranHeight))
+                stuckCount++;
+
+                if (stuckCount > 100)
                 {
-                    ranWidth = Random.Range(minRoomWidth, maxRoomWidth + 1);
-                    ranHeight = Random.Range(minRoomHeight, maxRoomHeight + 1);
-
-                    stuckCount++;
-
-                    if (stuckCount > 30)
-                    {
-                        GameObject.Destroy(roomPoints[rooms.Count]);
-                        roomPoints.RemoveAt(rooms.Count);
-                        numberOfRooms = roomPoints.Count;
-                        return;
-                    }
+                    GameObject.Destroy(roomPoints[currentRoomIndex]);
+                    roomPoints.RemoveAt(currentRoomIndex);
+                    numberOfRooms = roomPoints.Count;
+                    return;
                 }
             }
-
-            Vector3 roomPos = roomPoints[rooms.Count].transform.position + new Vector3(0, 0, 1);
-
-            // If I destroy the room points it will generate new ones so it look soff, guess they'll just have to stay for now
-            //GameObject.Destroy(roomPoints[0]);
-            //roomPoints.RemoveAt(0);
-
-            rooms.Add(Instantiate(roomFloor, roomPos, Quaternion.identity));
-            rooms[rooms.Count - 1].transform.localScale = new Vector3(ranWidth, ranHeight, 0);
         }
+
+        roomPoints[currentRoomIndex].GetComponent<RoomGen>().SetupRoom(ranWidth, ranHeight);
+
+        currentRoomIndex++;
     }
 
     private bool CheckOverlap(int width, int height)
     {
-        float xMin = rooms[rooms.Count - 1].transform.position.x - rooms[rooms.Count - 1].transform.localScale.x / 2;
-        float xMax = rooms[rooms.Count - 1].transform.position.x + rooms[rooms.Count - 1].transform.localScale.x / 2;
-        float yMax = rooms[rooms.Count - 1].transform.position.y + rooms[rooms.Count - 1].transform.localScale.y / 2;
-        float yMin = rooms[rooms.Count - 1].transform.position.y - rooms[rooms.Count - 1].transform.localScale.y / 2;
+        float xMin = roomPoints[currentRoomIndex].transform.position.x - width / 2 - 1;
+        float xMax = roomPoints[currentRoomIndex].transform.position.x + width / 2 + 1;
+        float yMax = roomPoints[currentRoomIndex].transform.position.y + height / 2 + 1;
+        float yMin = roomPoints[currentRoomIndex].transform.position.y - height / 2 - 1;
 
-        for (int i = 0; i < rooms.Count - 1; i++)
+        for (int i = 0; i < currentRoomIndex; i++)
         {
-            float xMin_ = rooms[i].transform.position.x - rooms[i].transform.localScale.x / 2;
-            float xMax_ = rooms[i].transform.position.x + rooms[i].transform.localScale.x / 2;
-            float yMax_ = rooms[i].transform.position.y + rooms[i].transform.localScale.y / 2;
-            float yMin_ = rooms[i].transform.position.y - rooms[i].transform.localScale.y / 2;
+            Vector3 scale = roomPoints[i].GetComponent<RoomGen>().RoomFloor.transform.localScale;
+
+            float xMin_ = roomPoints[i].transform.position.x - scale.x / 2;
+            float xMax_ = roomPoints[i].transform.position.x + scale.x / 2;
+            float yMax_ = roomPoints[i].transform.position.y + scale.y / 2;
+            float yMin_ = roomPoints[i].transform.position.y - scale.y / 2;
 
             if (xMin < xMax_ && xMax > xMin_ &&
                 yMin < yMax_ && yMax > yMin_)
@@ -190,4 +184,5 @@ public class LevelGen : MonoBehaviour
         }
         return false;
     }
+
 }
