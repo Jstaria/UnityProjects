@@ -26,14 +26,18 @@ public class LevelGen : MonoBehaviour
 
     [SerializeField] private bool ToggleRegeneration = false;
 
+    private PathGen pathGen;
     private int roomSpawnTries = 0;
     private int trueNumberRooms;
     private List<GameObject> roomPoints = new List<GameObject>();
     private int currentRoomIndex = 0;
     private Transform parentContainer;
 
+    public List<GameObject> Rooms { get { return roomPoints; } }
+
     private void Start()
     {
+        pathGen = GetComponent<PathGen>();
         trueNumberRooms = numberOfRooms;
         parentContainer = GameObject.Find("FloorGen").transform;
         mapFloor = Instantiate(mapFloor, new Vector3(0, 0, 10), Quaternion.identity);
@@ -47,6 +51,10 @@ public class LevelGen : MonoBehaviour
         {
             SetupRoomLayout();
             SpawnRooms();
+            if (roomPoints[roomPoints.Count - 1].GetComponent<RoomGen>().RoomFinished)
+            {
+                pathGen.GeneratePaths();
+            }
         }
         else
         {
@@ -68,13 +76,15 @@ public class LevelGen : MonoBehaviour
         mapFloor.transform.localScale = new Vector3(-floorWidth, -floorHeight, 0);
 
         // So it doesn't always have to run all of this code
-        if (roomPoints.Count == numberOfRooms) { return; }
+        if (roomPoints.Count == numberOfRooms) { pathGen.Rooms = roomPoints; return; }
 
         // First room location will always be 0,0
         if (roomPoints.Count == 0)
         {
             roomPoints.Add(Instantiate(roomPoint, Vector3.zero, Quaternion.identity));
             roomPoints[0].transform.parent = parentContainer;
+            pathGen.current = roomPoints[0];
+            pathGen.previous = pathGen.current;
         }
 
         // Generates up to number of rooms allowed
@@ -87,6 +97,7 @@ public class LevelGen : MonoBehaviour
             {
                 roomPoints.Add(Instantiate(roomPoint, new Vector3(ranX, ranY, 0), Quaternion.identity));
                 roomPoints[roomPoints.Count - 1].transform.parent = parentContainer;
+                //roomPoints[roomPoints.Count - 1].GetComponent<RoomGen>().SetLine(roomPoints[roomPoints.Count - 2].transform.position);
             }
             else { roomSpawnTries++; }
 
@@ -135,7 +146,7 @@ public class LevelGen : MonoBehaviour
             
         int stuckCount = 0;
 
-        if (currentRoomIndex != 0)
+        if (currentRoomIndex != 0 && currentRoomIndex < roomPoints.Count)
         {
             // I dont think check for overlap is currently working as I intended
             while (CheckOverlap(ranWidth, ranHeight))
