@@ -216,7 +216,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 60
+  orthographic size: 30
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -294,12 +294,12 @@ MonoBehaviour:
   roomPoint: {fileID: 576879923113124096, guid: eb13eda19de4abe4fa4754e9a26c3227, type: 3}
   mapFloor: {fileID: 4756271225635520229, guid: 517b77f5390409e4282c80c399e4b48d, type: 3}
   roomFloor: {fileID: 8995685650263694327, guid: 2f9a21fde955392459edf56310d2d599, type: 3}
-  floorHeight: 100
-  floorWidth: 100
-  numberOfRooms: 13
-  maxRoomWidth: 20
-  maxRoomHeight: 20
-  minRoomWidth: 10
-  minRoomHeight: 10
+  floorHeight: 50
+  floorWidth: 50
+  numberOfRooms: 10
+  maxRoomWidth: 15
+  maxRoomHeight: 15
+  minRoomWidth: 8
+  minRoomHeight: 8
   minDistance: 15
   ToggleRegeneration: 1
