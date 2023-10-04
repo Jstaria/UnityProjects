@@ -8,6 +8,8 @@ public class DungeonLoader : MonoBehaviour
     [SerializeField] DungeonGenerator generator;
     [SerializeField] GameObject player;
 
+    [SerializeField] bool showFloor;
+
     private int[] prevRoom = new int[2];
 
     private void Start()
@@ -50,7 +52,7 @@ public class DungeonLoader : MonoBehaviour
                     }
                     else
                     {
-                        generator.Rooms[i, j].SetActive(false);
+                        if (!showFloor) { generator.Rooms[i, j].SetActive(false); }
                     }
                 }
             }

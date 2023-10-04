@@ -298,6 +298,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   generator: {fileID: 512625713}
   player: {fileID: 956182989511705624, guid: da347d118dcc5bf4c979eba515b78bff, type: 3}
+  showFloor: 1
 --- !u!4 &924455196
 Transform:
   m_ObjectHideFlags: 0
