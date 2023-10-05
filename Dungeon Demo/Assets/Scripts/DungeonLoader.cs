@@ -78,7 +78,7 @@ public class DungeonLoader : MonoBehaviour
                 }
             }
 
-            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, generator.Rooms[currentRoom[0], currentRoom[1]].transform.position + new Vector3(0,0,-10), .025f);
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, generator.Rooms[currentRoom[0], currentRoom[1]].transform.position + new Vector3(0,0,-10), .075f * (1 - Time.deltaTime));
         }
 
         prevRoom = currentRoom;

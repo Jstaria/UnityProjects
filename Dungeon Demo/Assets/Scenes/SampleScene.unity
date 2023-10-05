@@ -155,7 +155,7 @@ MonoBehaviour:
   numberOfRooms: 20
   tileSample: {fileID: 9128736411416349659, guid: 5a39b49b0cea6294fb480dc8f6cf324f, type: 3}
   room: {fileID: 2810383398226353074, guid: 43c3113228e67ba4ca24b74670964a8f, type: 3}
-  spaceBetweenRooms: 50
+  spaceBetweenRooms: 100
   minRoomWidth: 30
   maxRoomWidth: 20
   minRoomHeight: 30
