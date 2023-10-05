@@ -152,14 +152,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac7031f3c5a251b4eae1855f833a0d34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfRooms: 10
+  numberOfRooms: 20
   tileSample: {fileID: 9128736411416349659, guid: 5a39b49b0cea6294fb480dc8f6cf324f, type: 3}
   room: {fileID: 2810383398226353074, guid: 43c3113228e67ba4ca24b74670964a8f, type: 3}
-  spaceBetweenRooms: 50
-  minRoomWidth: 30
-  maxRoomWidth: 50
-  minRoomHeight: 30
-  maxRoomHeight: 50
+  spaceBetweenRooms: 12
+  minRoomWidth: 10
+  maxRoomWidth: 10
+  minRoomHeight: 10
+  maxRoomHeight: 10
 --- !u!4 &512625714
 Transform:
   m_ObjectHideFlags: 0

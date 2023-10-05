@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    [SerializeField][Range(1,49)] private int numberOfRooms;
+    [SerializeField][Range(1,30)] private int numberOfRooms;
     [SerializeField] private GameObject tileSample;
     [SerializeField] private GameObject room;
 
@@ -26,7 +27,7 @@ public class DungeonGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rooms = new GameObject[7, 7];
+        rooms = new GameObject[9, 9];
         roomFloors = new GameObject[rooms.GetLength(0), rooms.GetLength(1)];
 
         // Creates the grid and fills it with inactive rooms
@@ -65,7 +66,6 @@ public class DungeonGenerator : MonoBehaviour
 
                 // Activating room and generating its own grid
                 rooms[gridSpotX, gridSpotY].GetComponent<RoomGen>().GenerateRoomGrid(x, y, wRan, hRan);
-                rooms[gridSpotX, gridSpotY].transform.parent = transform;
                 rooms[gridSpotX, gridSpotY].SetActive(true);
 
                 activeRooms++;
@@ -94,7 +94,37 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
-        DoneGenerating = true;
+        Vector2[] directions = new Vector2[]
+        {
+            new Vector2(0, 1), // Up
+            new Vector2(1, 0), // Right
+            new Vector2(0, -1), // Down
+            new Vector2(-1, 0), // Left
+        };
+
+        for (int i = 0; i < rooms.GetLength(0); i++)
+        {
+            for (int j = 0; j < rooms.GetLength(1); j++)
+            {
+                if (!rooms[i, j].GetComponent<RoomGen>().IsGenerated) { continue; }
+
+                for (int k = 0; k < 4; k++)
+                {
+                    int[] nextGridCoords = new int[2] { i + (int)directions[k].x, j + (int)directions[k].y };
+
+                    if (nextGridCoords[0] < rooms.GetLength(0) && nextGridCoords[1] < rooms.GetLength(1) &&
+                    nextGridCoords[0] >= 0 && nextGridCoords[1] >= 0)
+                    {
+                        if (!rooms[nextGridCoords[0], nextGridCoords[1]].GetComponent<RoomGen>().IsGenerated) { continue; }
+
+                        Vector2 tpPos = rooms[nextGridCoords[0], nextGridCoords[1]].GetComponent<RoomGen>().DoorTPLocations[(k + 2) % 4];
+                        rooms[i, j].GetComponent<RoomGen>().AddDoorConnection(tpPos, k);
+                    }
+                }
+            }
+        }
+
+       DoneGenerating = true;
     }
 
     private Vector2 FindSuitableNeighbor(Vector2 prevRoom)
@@ -112,6 +142,7 @@ public class DungeonGenerator : MonoBehaviour
         Vector2 ranDir = Vector2.zero;
 
         int stuck = 0;
+        bool restartFromCenter = false;
 
         do
         {
@@ -135,9 +166,30 @@ public class DungeonGenerator : MonoBehaviour
 
             stuck++;
         }
-        while (rooms[(int)(nextGridCoords.x), (int)(nextGridCoords.y)].activeSelf);
+        while (rooms[(int)(nextGridCoords.x), (int)(nextGridCoords.y)].activeSelf || restartFromCenter);
 
         this.prevRoom = nextGridCoords;
+
+        if (restartFromCenter)
+        {
+            int gridSpotX = rooms.GetLength(0) / 2;
+            int gridSpotY = rooms.GetLength(1) / 2;
+            Vector2 roomPos = rooms[gridSpotX, gridSpotY].transform.position;
+
+            float x = roomPos.x;
+            float y = roomPos.y;
+
+            int wRan = Random.Range(minRoomWidth / 2, maxRoomWidth / 2) * 2;
+            int hRan = Random.Range(minRoomHeight / 2, maxRoomHeight / 2) * 2;
+
+            GameObject.Destroy(rooms[gridSpotX, gridSpotY]);
+
+            rooms[gridSpotX, gridSpotY] = Instantiate(room, roomPos, Quaternion.identity);
+
+            // Activating room and generating its own grid
+            rooms[gridSpotX, gridSpotY].GetComponent<RoomGen>().GenerateRoomGrid(x, y, wRan, hRan);
+            rooms[gridSpotX, gridSpotY].SetActive(true);
+        }
 
         return nextGridCoords;
     }
