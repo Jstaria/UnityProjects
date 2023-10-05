@@ -155,11 +155,11 @@ MonoBehaviour:
   numberOfRooms: 20
   tileSample: {fileID: 9128736411416349659, guid: 5a39b49b0cea6294fb480dc8f6cf324f, type: 3}
   room: {fileID: 2810383398226353074, guid: 43c3113228e67ba4ca24b74670964a8f, type: 3}
-  spaceBetweenRooms: 12
-  minRoomWidth: 10
-  maxRoomWidth: 10
-  minRoomHeight: 10
-  maxRoomHeight: 10
+  spaceBetweenRooms: 50
+  minRoomWidth: 30
+  maxRoomWidth: 20
+  minRoomHeight: 30
+  maxRoomHeight: 20
 --- !u!4 &512625714
 Transform:
   m_ObjectHideFlags: 0
@@ -298,7 +298,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   generator: {fileID: 512625713}
   player: {fileID: 956182989511705624, guid: da347d118dcc5bf4c979eba515b78bff, type: 3}
-  showFloor: 1
+  showFloor: 0
 --- !u!4 &924455196
 Transform:
   m_ObjectHideFlags: 0

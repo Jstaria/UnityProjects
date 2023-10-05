@@ -14,7 +14,7 @@ public class DungeonLoader : MonoBehaviour
 
     private void Start()
     {
-        player = Instantiate(player, Vector3.zero, Quaternion.identity);
+        player = Instantiate(player, new Vector3(0,0,-5), Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -77,6 +77,8 @@ public class DungeonLoader : MonoBehaviour
                     generator.Rooms[currentRoom[0] + (int)directions[i].x, currentRoom[1] + (int)directions[i].y].SetActive(true);
                 }
             }
+
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, generator.Rooms[currentRoom[0], currentRoom[1]].transform.position + new Vector3(0,0,-10), .5f);
         }
 
         prevRoom = currentRoom;

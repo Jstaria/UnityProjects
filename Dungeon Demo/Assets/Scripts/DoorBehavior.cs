@@ -15,7 +15,7 @@ public class DoorBehavior : MonoBehaviour
 
         if (CheckCollision(player.transform.position))
         {
-            player.transform.position = tpPos;
+            player.transform.position = (Vector3)tpPos + new Vector3(0,0,-5);
         }
     }
 
