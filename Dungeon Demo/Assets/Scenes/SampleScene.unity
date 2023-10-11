@@ -155,9 +155,9 @@ MonoBehaviour:
   numberOfRooms: 20
   tileSample: {fileID: 9128736411416349659, guid: 5a39b49b0cea6294fb480dc8f6cf324f, type: 3}
   room: {fileID: 2810383398226353074, guid: 43c3113228e67ba4ca24b74670964a8f, type: 3}
-  spaceBetweenRooms: {x: 18, y: 18}
-  minMaxWidth: {x: 18, y: 18}
-  minMaxHeight: {x: 18, y: 18}
+  spaceBetweenRooms: {x: 16, y: 9}
+  minMaxWidth: {x: 16, y: 16}
+  minMaxHeight: {x: 9, y: 9}
 --- !u!4 &512625714
 Transform:
   m_ObjectHideFlags: 0
@@ -234,7 +234,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 9
+  orthographic size: 4
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
