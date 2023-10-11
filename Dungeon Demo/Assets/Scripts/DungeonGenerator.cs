@@ -9,12 +9,10 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] private GameObject tileSample;
     [SerializeField] private GameObject room;
 
-    [SerializeField] private int spaceBetweenRooms;
+    [SerializeField] private Vector2 spaceBetweenRooms;
 
-    [SerializeField] private int minRoomWidth;
-    [SerializeField] private int maxRoomWidth;
-    [SerializeField] private int minRoomHeight;
-    [SerializeField] private int maxRoomHeight;
+    [SerializeField] private Vector2 minMaxWidth;
+    [SerializeField] private Vector2 minMaxHeight;
 
     private GameObject[,] rooms;
     private Vector2 prevRoom;
@@ -35,12 +33,12 @@ public class DungeonGenerator : MonoBehaviour
         {
             for (int j = 0; j < rooms.GetLength(1); j++)
             {
-                rooms[i, j] = Instantiate(room, new Vector3(i * spaceBetweenRooms - (spaceBetweenRooms * rooms.GetLength(0) / 2) + (spaceBetweenRooms / 2), j * spaceBetweenRooms - (spaceBetweenRooms * rooms.GetLength(1) / 2) + (spaceBetweenRooms / 2)), Quaternion.identity);
+                rooms[i, j] = Instantiate(room, new Vector3(i * spaceBetweenRooms.x - (spaceBetweenRooms.x * rooms.GetLength(0) / 2) + (spaceBetweenRooms.x / 2), j * spaceBetweenRooms.y - (spaceBetweenRooms.y * rooms.GetLength(1) / 2) + (spaceBetweenRooms.y / 2)), Quaternion.identity);
                 rooms[i, j].transform.parent = transform;
                 rooms[i, j].SetActive(false);
 
-                roomFloors[i, j] = Instantiate(tileSample, new Vector3(i * spaceBetweenRooms - (spaceBetweenRooms * rooms.GetLength(0) / 2) + (spaceBetweenRooms / 2), j * spaceBetweenRooms - (spaceBetweenRooms * rooms.GetLength(1) / 2) + (spaceBetweenRooms / 2), 20), Quaternion.identity);
-                roomFloors[i, j].transform.localScale = new Vector3(spaceBetweenRooms, spaceBetweenRooms);
+                roomFloors[i, j] = Instantiate(room, new Vector3(i * spaceBetweenRooms.x - (spaceBetweenRooms.x * rooms.GetLength(0) / 2) + (spaceBetweenRooms.x / 2), j * spaceBetweenRooms.y - (spaceBetweenRooms.y * rooms.GetLength(1) / 2) + (spaceBetweenRooms.y / 2), 20), Quaternion.identity);
+                roomFloors[i, j].transform.localScale = new Vector3(spaceBetweenRooms.x, spaceBetweenRooms.y);
                 roomFloors[i, j].transform.parent = GameObject.Find("Floor").transform;
             }
         }
@@ -51,8 +49,8 @@ public class DungeonGenerator : MonoBehaviour
             int wRan, hRan;
             
             // height and width can afford to be random with grid like layout since we can determine the distance between all of the rooms
-            wRan = Random.Range(minRoomWidth / 2, maxRoomWidth / 2) * 2;
-            hRan = Random.Range(minRoomHeight / 2, maxRoomHeight / 2) * 2;
+            wRan = Random.Range((int)minMaxWidth.x / 2, (int)minMaxWidth.y / 2) * 2;
+            hRan = Random.Range((int)minMaxHeight.x / 2, (int)minMaxHeight.y / 2) * 2;
 
             // Spawn room will always be center
             if (activeRooms == 0)
@@ -155,6 +153,7 @@ public class DungeonGenerator : MonoBehaviour
                 if (stuckDir > 4)
                 {
                     nextGridCoords = new Vector2(rooms.GetLength(0) / 2, rooms.GetLength(1) / 2);
+                    restartFromCenter = true;
                 }
 
                 stuckDir++;
@@ -162,6 +161,7 @@ public class DungeonGenerator : MonoBehaviour
             while (nextGridCoords.x >= rooms.GetLength(0) || nextGridCoords.y >= rooms.GetLength(1) ||
                    nextGridCoords.x < 0 || nextGridCoords.y < 0);
 
+            if (restartFromCenter) { break; }
             if (stuck > 10) { numberOfRooms = activeRooms; break; }
 
             stuck++;
@@ -179,8 +179,8 @@ public class DungeonGenerator : MonoBehaviour
             float x = roomPos.x;
             float y = roomPos.y;
 
-            int wRan = Random.Range(minRoomWidth / 2, maxRoomWidth / 2) * 2;
-            int hRan = Random.Range(minRoomHeight / 2, maxRoomHeight / 2) * 2;
+            int wRan = Random.Range((int)minMaxWidth.x / 2, (int)minMaxWidth.y / 2) * 2;
+            int hRan = Random.Range((int)minMaxHeight.x / 2, (int)minMaxHeight.y / 2) * 2;
 
             GameObject.Destroy(rooms[gridSpotX, gridSpotY]);
 
