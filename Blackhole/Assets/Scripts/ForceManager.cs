@@ -70,7 +70,7 @@ public class ForceManager : MonoBehaviour
 
     public bool CheckCollision(BlackholeBehavior b, MassBehavior m)
     {
-        return (b.transform.position - m.transform.position).magnitude < b.Radius + m.Radius || (b.transform.position - m.transform.position).magnitude > 200;
+        return (b.transform.position - m.transform.position).magnitude < b.Radius + m.Radius || (b.transform.position - m.transform.position).magnitude > 1000;
     }
 
     public void SpawnMass(InputAction.CallbackContext context)
