@@ -29,7 +29,7 @@ public class Chunk : MonoBehaviour
         noise = new FastNoiseLite();
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(.3f);
-        noise.SetSeed(0);
+        noise.SetSeed(Random.Range(0,int.MaxValue));
         chunk = new ChunkData(width, height, depth, Vector3Int.zero, scale, noise);
         SetMesh();
     }

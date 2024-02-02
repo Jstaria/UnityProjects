@@ -74,7 +74,7 @@ public class ChunkData
                             meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, (heightY) + worldPosition.y, k + worldPosition.z);
                             break;
                         case 1:
-                            meshVertices[i][j, k] = new Vector3(k * scale, j * scale, (lengthZ) * scale) + worldPosition - offset; // front
+                            meshVertices[i][j, k] = new Vector3(j * scale, k * scale, (lengthZ) * scale) + worldPosition - offset; // front
                             meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, k + worldPosition.y, (lengthZ) + worldPosition.z);
                             break;
                         case 2:
@@ -82,7 +82,7 @@ public class ChunkData
                             meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, worldPosition.y, k + worldPosition.z);
                             break;
                         case 3:
-                            meshVertices[i][j, k] = new Vector3(k * scale, j * scale, 0) + worldPosition - offset; // back
+                            meshVertices[i][j, k] = new Vector3(j * scale, k * scale, 0) + worldPosition - offset; // back
                             meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, k + worldPosition.y, worldPosition.z);
                             break;
                         case 4:
@@ -134,7 +134,7 @@ public class ChunkData
         Vector3 centerDown = Vector3.Lerp(bottomRight, bottomLeft, .5f);
         Vector3 centerLeft = Vector3.Lerp(topLeft, bottomLeft, .5f);
 
-        if (i == 2 || i == 3 || i == 5)
+        if (i == 2 || i == 1 || i == 5)
         {
             switch (state)
             {
