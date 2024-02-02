@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ChunkData
@@ -34,7 +35,7 @@ public class ChunkData
 
         CreateLineList();
         SetDirections();
-        SetFirstChunk(widthX, heightY, lengthZ, worldPosition);
+        SetFirstChunk(this.widthX, this.heightY, this.lengthZ, this.worldPosition);
     }
 
     private void SetFirstChunk(int widthX, int heightY, int lengthZ, Vector3Int worldPosition)
@@ -48,26 +49,6 @@ public class ChunkData
 
     private void CreateVertices(int widthX, int heightY, int lengthZ, Vector3Int worldPosition)
     {
-        //for (int i = 0; i < widthX + 1; i++)
-        //{
-        //    for (int j = 0; j < heightY + 1; j++)
-        //    {
-        //        for (int k = 0; k < lengthZ + 1; k++)
-        //        {
-        //            meshVertices[i, j, k] = worldPosition + new Vector3(i * scale, j * scale, k * scale);
-
-        //            if (i == 0 || i == widthX || j == 0 || j == heightY || k == 0 || k == lengthZ)
-        //            {
-        //                meshVerticeData[i, j, k] = noise.GetNoise(i + worldPosition.x, j + worldPosition.y, k + worldPosition.z);
-        //            }
-        //            else
-        //            {
-        //                meshVerticeData[i, j, k] = -1f;
-        //            }
-        //        }
-        //    }
-        //}
-
         meshVertices[0] = new Vector3[widthX + 1, lengthZ + 1]; meshVerticeData[0] = new float[widthX + 1, lengthZ + 1]; // top
         meshVertices[1] = new Vector3[heightY + 1, widthX + 1]; meshVerticeData[1] = new float[heightY + 1, widthX + 1]; // front
         meshVertices[2] = new Vector3[widthX + 1, lengthZ + 1]; meshVerticeData[2] = new float[widthX + 1, lengthZ + 1]; // bottom
@@ -77,37 +58,40 @@ public class ChunkData
 
         triangles = new List<Vector3[]>();
 
+        Vector3 offset = new Vector3(widthX * scale / 2, heightY * scale / 2, lengthZ * scale / 2) + new Vector3(.5f, .5f, .5f);
+        //offset = Vector3.zero;
+
         for (int i = 0; i < meshVertices.Length; i++)
         {
             for (int j = 0; j < meshVertices[i].GetLength(0); j++)
             {
                 for (int k = 0; k < meshVertices[i].GetLength(1); k++)
                 {
-                    switch(i)
+                    switch (i)
                     {
                         case 0:
-                            meshVertices[i][j, k] = new Vector3(j * scale, (heightY + 1) * scale, k * scale) + worldPosition; // top
-                            meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, (heightY + 1) + worldPosition.y, k + worldPosition.z);
+                            meshVertices[i][j, k] = new Vector3(j * scale, (heightY) * scale, k * scale) + worldPosition - offset; // top
+                            meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, (heightY) + worldPosition.y, k + worldPosition.z);
                             break;
                         case 1:
-                            meshVertices[i][j, k] = new Vector3(k * scale, j * scale, (lengthZ + 1) * scale) + worldPosition; // front
-                            meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, k + worldPosition.y, (lengthZ + 1) + worldPosition.z);
+                            meshVertices[i][j, k] = new Vector3(k * scale, j * scale, (lengthZ) * scale) + worldPosition - offset; // front
+                            meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, k + worldPosition.y, (lengthZ) + worldPosition.z);
                             break;
                         case 2:
-                            meshVertices[i][j, k] = new Vector3(j * scale, 0, k * scale) + worldPosition; // bottom
+                            meshVertices[i][j, k] = new Vector3(j * scale, 0, k * scale) + worldPosition - offset; // bottom
                             meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, worldPosition.y, k + worldPosition.z);
                             break;
                         case 3:
-                            meshVertices[i][j, k] = new Vector3(k * scale, j * scale, 0) + worldPosition; // back
+                            meshVertices[i][j, k] = new Vector3(k * scale, j * scale, 0) + worldPosition - offset; // back
                             meshVerticeData[i][j, k] = noise.GetNoise(j + worldPosition.x, k + worldPosition.y, worldPosition.z);
                             break;
                         case 4:
-                            meshVertices[i][j, k] = new Vector3(0, j * scale, k * scale) + worldPosition; // left
+                            meshVertices[i][j, k] = new Vector3(0, j * scale, k * scale) + worldPosition - offset; // left
                             meshVerticeData[i][j, k] = noise.GetNoise(worldPosition.x, j + worldPosition.y, k + worldPosition.z);
                             break;
                         case 5:
-                            meshVertices[i][j, k] = new Vector3((widthX + 1) * scale , j * scale, k * scale) + worldPosition; // right
-                            meshVerticeData[i][j, k] = noise.GetNoise((widthX + 1) + worldPosition.x, j + worldPosition.y, k + worldPosition.z);
+                            meshVertices[i][j, k] = new Vector3((widthX) * scale, j * scale, k * scale) + worldPosition - offset; // right
+                            meshVerticeData[i][j, k] = noise.GetNoise((widthX) + worldPosition.x, j + worldPosition.y, k + worldPosition.z);
                             break;
                     }
                 }
@@ -150,94 +134,189 @@ public class ChunkData
         Vector3 centerDown = Vector3.Lerp(bottomRight, bottomLeft, .5f);
         Vector3 centerLeft = Vector3.Lerp(topLeft, bottomLeft, .5f);
 
-        switch (state)
+        if (i == 2 || i == 3 || i == 5)
         {
-            case 0:
-                break;
+            switch (state)
+            {
+                case 0:
+                    break;
 
-            // 1 Point
-            case 1:
-                triangles.Add(new Vector3[] { centerDown, bottomLeft, centerLeft });
-                break;
+                // 1 Point
+                case 1:
+                    triangles.Add(new Vector3[] { centerDown, bottomLeft, centerLeft });
+                    break;
 
-            case 2:
-                triangles.Add(new Vector3[] { centerRight, bottomRight, centerDown });
-                break;
+                case 2:
+                    triangles.Add(new Vector3[] { centerRight, bottomRight, centerDown });
+                    break;
 
-            case 4:
-                triangles.Add(new Vector3[] { centerUp, topRight, centerRight });
-                break;
+                case 4:
+                    triangles.Add(new Vector3[] { centerUp, topRight, centerRight });
+                    break;
 
-            case 8:
-                triangles.Add(new Vector3[] { topLeft, centerUp, centerLeft });
-                break;
+                case 8:
+                    triangles.Add(new Vector3[] { topLeft, centerUp, centerLeft });
+                    break;
 
-            // 2 Point
+                // 2 Point
 
-            case 3:
-                triangles.Add(new Vector3[] { centerRight, bottomRight, bottomLeft });
-                triangles.Add(new Vector3[] { centerRight, bottomLeft, centerLeft });
-                break;
+                case 3:
+                    triangles.Add(new Vector3[] { centerRight, bottomRight, bottomLeft });
+                    triangles.Add(new Vector3[] { centerRight, bottomLeft, centerLeft });
+                    break;
 
-            case 6:
-                triangles.Add(new Vector3[] { centerUp, topRight, bottomRight });
-                triangles.Add(new Vector3[] { centerUp, bottomRight, centerDown });
-                break;
+                case 6:
+                    triangles.Add(new Vector3[] { centerUp, topRight, bottomRight });
+                    triangles.Add(new Vector3[] { centerUp, bottomRight, centerDown });
+                    break;
 
-            case 9:
-                triangles.Add(new Vector3[] { topLeft, centerDown, bottomLeft });
-                triangles.Add(new Vector3[] { topLeft, centerUp, centerDown });
-                break;
+                case 9:
+                    triangles.Add(new Vector3[] { topLeft, centerDown, bottomLeft });
+                    triangles.Add(new Vector3[] { topLeft, centerUp, centerDown });
+                    break;
 
-            case 12:
-                triangles.Add(new Vector3[] { topLeft, topRight, centerRight });
-                triangles.Add(new Vector3[] { topLeft, centerRight, centerLeft });
-                break;
+                case 12:
+                    triangles.Add(new Vector3[] { topLeft, topRight, centerRight });
+                    triangles.Add(new Vector3[] { topLeft, centerRight, centerLeft });
+                    break;
 
-            case 5:
-                triangles.Add(new Vector3[] { centerUp, topRight, centerRight });
-                triangles.Add(new Vector3[] { centerUp, centerRight, centerDown });
-                triangles.Add(new Vector3[] { centerUp, centerDown, bottomLeft });
-                triangles.Add(new Vector3[] { centerUp, bottomLeft, centerLeft });
-                break;
+                case 5:
+                    triangles.Add(new Vector3[] { centerUp, topRight, centerRight });
+                    triangles.Add(new Vector3[] { centerUp, centerRight, centerDown });
+                    triangles.Add(new Vector3[] { centerUp, centerDown, bottomLeft });
+                    triangles.Add(new Vector3[] { centerUp, bottomLeft, centerLeft });
+                    break;
 
-            case 10:
-                triangles.Add(new Vector3[] { topLeft, centerUp, centerRight });
-                triangles.Add(new Vector3[] { topLeft, centerRight, bottomRight });
-                triangles.Add(new Vector3[] { topLeft, bottomRight, centerDown });
-                triangles.Add(new Vector3[] { topLeft, centerDown, centerLeft });
-                break;
+                case 10:
+                    triangles.Add(new Vector3[] { topLeft, centerUp, centerRight });
+                    triangles.Add(new Vector3[] { topLeft, centerRight, bottomRight });
+                    triangles.Add(new Vector3[] { topLeft, bottomRight, centerDown });
+                    triangles.Add(new Vector3[] { topLeft, centerDown, centerLeft });
+                    break;
 
-            // 3 Point
+                // 3 Point
 
-            case 7:
-                triangles.Add(new Vector3[] { centerUp, topRight, bottomRight });
-                triangles.Add(new Vector3[] { centerUp, bottomRight, bottomLeft });
-                triangles.Add(new Vector3[] { centerUp, bottomLeft, centerLeft });
-                break;
+                case 7:
+                    triangles.Add(new Vector3[] { centerUp, topRight, bottomRight });
+                    triangles.Add(new Vector3[] { centerUp, bottomRight, bottomLeft });
+                    triangles.Add(new Vector3[] { centerUp, bottomLeft, centerLeft });
+                    break;
 
-            case 11:
-                triangles.Add(new Vector3[] { topLeft, centerUp, centerRight });
-                triangles.Add(new Vector3[] { topLeft, centerRight, bottomRight });
-                triangles.Add(new Vector3[] { topLeft, bottomRight, bottomLeft });
-                break;
+                case 11:
+                    triangles.Add(new Vector3[] { topLeft, centerUp, centerRight });
+                    triangles.Add(new Vector3[] { topLeft, centerRight, bottomRight });
+                    triangles.Add(new Vector3[] { topLeft, bottomRight, bottomLeft });
+                    break;
 
-            case 13:
-                triangles.Add(new Vector3[] { topLeft, topRight, centerRight });
-                triangles.Add(new Vector3[] { topLeft, centerRight, centerDown });
-                triangles.Add(new Vector3[] { topLeft, centerDown, bottomLeft });
-                break;
+                case 13:
+                    triangles.Add(new Vector3[] { topLeft, topRight, centerRight });
+                    triangles.Add(new Vector3[] { topLeft, centerRight, centerDown });
+                    triangles.Add(new Vector3[] { topLeft, centerDown, bottomLeft });
+                    break;
 
-            case 14:
-                triangles.Add(new Vector3[] { topLeft, topRight, bottomRight });
-                triangles.Add(new Vector3[] { topLeft, bottomRight, centerDown });
-                triangles.Add(new Vector3[] { topLeft, centerDown, centerLeft });
-                break;
+                case 14:
+                    triangles.Add(new Vector3[] { topLeft, topRight, bottomRight });
+                    triangles.Add(new Vector3[] { topLeft, bottomRight, centerDown });
+                    triangles.Add(new Vector3[] { topLeft, centerDown, centerLeft });
+                    break;
 
-            case 15:
-                triangles.Add(new Vector3[] { topLeft, topRight, bottomRight });
-                triangles.Add(new Vector3[] { topLeft, bottomRight, bottomLeft });
-                break;
+                case 15:
+                    triangles.Add(new Vector3[] { topLeft, topRight, bottomRight });
+                    triangles.Add(new Vector3[] { topLeft, bottomRight, bottomLeft });
+                    break;
+            }
+        }
+        else
+        {
+            switch (state)
+            {
+                case 0:
+                    break;
+
+                // 1 Point
+                case 1:
+                    triangles.Add(new Vector3[] { centerLeft, bottomLeft, centerDown });
+                    break;
+
+                case 2:
+                    triangles.Add(new Vector3[] { centerDown, bottomRight, centerRight });
+                    break;
+
+                case 4:
+                    triangles.Add(new Vector3[] { centerRight, topRight, centerUp });
+                    break;
+
+                case 8:
+                    triangles.Add(new Vector3[] { centerLeft, centerUp, topLeft });
+                    break;
+
+                // 2 Point
+
+                case 3:
+                    triangles.Add(new Vector3[] { bottomLeft, bottomRight, centerRight });
+                    triangles.Add(new Vector3[] { centerLeft, bottomLeft, centerRight });
+                    break;
+
+                case 6:
+                    triangles.Add(new Vector3[] { bottomRight, topRight, centerUp });
+                    triangles.Add(new Vector3[] { centerDown, bottomRight, centerUp });
+                    break;
+
+                case 9:
+                    triangles.Add(new Vector3[] { bottomLeft, centerDown, topLeft });
+                    triangles.Add(new Vector3[] { centerDown, centerUp, topLeft });
+                    break;
+
+                case 12:
+                    triangles.Add(new Vector3[] { centerRight, topRight, topLeft });
+                    triangles.Add(new Vector3[] { centerLeft, centerRight, topLeft });
+                    break;
+
+                case 5:
+                    triangles.Add(new Vector3[] { centerRight, topRight, centerUp });
+                    triangles.Add(new Vector3[] { centerDown, centerRight, centerUp });
+                    triangles.Add(new Vector3[] { bottomLeft, centerDown, centerUp });
+                    triangles.Add(new Vector3[] { centerLeft, bottomLeft, centerUp });
+                    break;
+
+                case 10:
+                    triangles.Add(new Vector3[] { centerRight, centerUp, topLeft });
+                    triangles.Add(new Vector3[] { bottomRight, centerRight, topLeft });
+                    triangles.Add(new Vector3[] { centerDown, bottomRight, topLeft });
+                    triangles.Add(new Vector3[] { centerLeft, centerDown, topLeft });
+                    break;
+
+                // 3 Point
+
+                case 7:
+                    triangles.Add(new Vector3[] { bottomRight, topRight, centerUp });
+                    triangles.Add(new Vector3[] { bottomLeft, bottomRight, centerUp });
+                    triangles.Add(new Vector3[] { centerLeft, bottomLeft, centerUp });
+                    break;
+
+                case 11:
+                    triangles.Add(new Vector3[] { centerRight, centerUp, topLeft });
+                    triangles.Add(new Vector3[] { bottomRight, centerRight, topLeft });
+                    triangles.Add(new Vector3[] { bottomLeft, bottomRight, topLeft });
+                    break;
+
+                case 13:
+                    triangles.Add(new Vector3[] { centerRight, topRight, topLeft });
+                    triangles.Add(new Vector3[] { centerDown, centerRight, topLeft });
+                    triangles.Add(new Vector3[] { bottomLeft, centerDown, topLeft });
+                    break;
+
+                case 14:
+                    triangles.Add(new Vector3[] { bottomRight, topRight, topLeft });
+                    triangles.Add(new Vector3[] { centerDown, bottomRight, topLeft });
+                    triangles.Add(new Vector3[] { centerLeft, centerDown, topLeft });
+                    break;
+
+                case 15:
+                    triangles.Add(new Vector3[] { bottomRight, topRight, topLeft });
+                    triangles.Add(new Vector3[] { bottomLeft, bottomRight, topLeft });
+                    break;
+            }
         }
     }
 

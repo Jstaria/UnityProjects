@@ -14,6 +14,12 @@ public class Chunk : MonoBehaviour
     private List<Vector3> vertices;
     private int[] triangles;
 
+    [SerializeField] private int width;
+    [SerializeField] private int height;
+    [SerializeField] private int depth;
+
+    [SerializeField] private int scale;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +30,7 @@ public class Chunk : MonoBehaviour
         noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         noise.SetFrequency(.3f);
         noise.SetSeed(0);
-        chunk = new ChunkData(10, 20, 10, Vector3Int.zero, 10, noise);
+        chunk = new ChunkData(width, height, depth, Vector3Int.zero, scale, noise);
         SetMesh();
     }
 
