@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
 public class Chunk : MonoBehaviour
 {
     private ChunkData chunk;
@@ -20,10 +19,13 @@ public class Chunk : MonoBehaviour
 
     [SerializeField] private int scale;
 
+    [SerializeField] private GameObject mesh;
+
     // Start is called before the first frame update
     void Start()
     {
-        meshFilter = GetComponent<MeshFilter>();
+        mesh = Instantiate(mesh);
+        meshFilter = mesh.GetComponent<MeshFilter>();
         //meshCollider = GetComponent<MeshCollider>();
 
         noise = new FastNoiseLite();
@@ -62,6 +64,7 @@ public class Chunk : MonoBehaviour
         mesh.RecalculateNormals();
 
         meshFilter.mesh = mesh;
+        this.mesh.GetComponent<Material>().SetColor("red",Color.red);
         //meshCollider.sharedMesh = mesh;
     }
 }
