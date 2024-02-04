@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 
@@ -11,6 +14,9 @@ public class WorldArray : MonoBehaviour
 {
     [SerializeField] private Vector2Int ArrayDimensions;
     [SerializeField] private float scale;
+    [SerializeField] private float radius;
+    [SerializeField] private int splatterWidth;
+    [SerializeField] private int splatterHeight;
 
     private MeshFilter meshFilter;
     private MeshRenderer meshRend;
@@ -22,6 +28,8 @@ public class WorldArray : MonoBehaviour
     private int triangleIndex;
 
     private Vector2 mousePos;
+
+    private bool hasStarted = false;
 
     private void Start()
     {
@@ -38,18 +46,88 @@ public class WorldArray : MonoBehaviour
         CreateArray();
         TriangulatePoints();
         SetMesh();
+
+        hasStarted = true;
     }
 
     public void MousePress(InputAction.CallbackContext context)
     {
-        if (context.action.IsPressed())
+        if (!context.action.IsPressed()) return;
+
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        float mouseX = Mathf.Round(mousePos.x * 4) / 4;
+        float mouseY = Mathf.Round(mousePos.y * 4) / 4;
+
+        int arrayX = (int)(mouseX * 4) + ArrayDimensions.x / 2;
+        int arrayY = (int)(mouseY * 4) + ArrayDimensions.y / 2;
+
+        //Debug.Log(arrayX + " " + arrayY);
+
+        int startWidth = -splatterWidth / 2;
+        int startheight = -splatterHeight / 2;
+
+        for (int x = (int)(-radius); x <= radius; ++x)
         {
-            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            int y = (int)(Mathf.Round(Mathf.Sqrt(radius * radius - x * x)));
+
+            if (Random.Range(0, 1f) < .75f)
+            {
+                mapFloor[x + arrayX + Random.Range(-2, 2), y + arrayY + Random.Range(-2, 2)].Data = 1;
+            }
+
+            if (Random.Range(0, 1f) < .75f)
+            {
+                mapFloor[y + arrayX + Random.Range(-2, 2), x + arrayY + Random.Range(-2, 2)].Data = 1;
+            }
+
+            if (Random.Range(0, 1f) < .75f)
+            {
+                mapFloor[-x + arrayX + Random.Range(-2, 2), -y + arrayY + Random.Range(-2, 2)].Data = 1;
+            }
+
+            if (Random.Range(0, 1f) < .75f)
+            {
+                mapFloor[-y + arrayX + Random.Range(-2, 2), -x + arrayY + Random.Range(-2, 2)].Data = 1;
+            }
         }
-        
+        for (int x = (int)(-radius / 2); x <= radius / 2; ++x)
+        {
+            int y = (int)(Mathf.Round(Mathf.Sqrt((radius / 1.5f) * (radius / 1.5f) - x * x)));
 
+            if (Random.Range(0, 1f) < .5f)
+            {
+                mapFloor[x + arrayX, y + arrayY].Data = 1;
+            }
 
+            if (Random.Range(0, 1f) < .5f)
+            {
+                mapFloor[y + arrayX, x + arrayY].Data = 1;
+            }
+
+            if (Random.Range(0, 1f) < .5f)
+            {
+                mapFloor[-x + arrayX, -y + arrayY].Data = 1;
+            }
+
+            if (Random.Range(0, 1f) < .5f)
+            {
+                mapFloor[-y + arrayX, -x + arrayY].Data = 1;
+            }
+        }
+
+        TriangulatePoints();
+        SetMesh();
     }
+
+    private bool IsInArray<Win>(int i, int j, Win[,] array)
+    {
+        return 
+            i >= 0 && j >= 0 && 
+            i < array.GetLength(0) && j < array.GetLength(1);
+    }
+
+    #region MeshStuff
 
     private void CreateArray()
     {
@@ -108,89 +186,95 @@ public class WorldArray : MonoBehaviour
 
             // 1 Point
             case 1:
-                triangles.Add(new Triangle(bottomLeft, centerLeft, centerDown, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 2:
-                triangles.Add(new Triangle(bottomRight, centerDown, centerRight, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 4:
-                triangles.Add(new Triangle(topRight, centerRight, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 8:
-                triangles.Add(new Triangle(centerUp, centerLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
+                AddTriangle(new Triangle(bottomLeft, centerLeft, centerDown, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 2:           
+                AddTriangle(new Triangle(bottomRight, centerDown, centerRight, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 4:           
+                AddTriangle(new Triangle(topRight, centerRight, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 8:           
+                AddTriangle(new Triangle(centerUp, centerLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
             // 2 Point          
-
-            case 3:
-                triangles.Add(new Triangle(bottomRight, bottomLeft, centerRight, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomLeft, centerLeft, centerRight, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 6:
-                triangles.Add(new Triangle(topRight, bottomRight, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomRight, centerDown, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 9:
-                triangles.Add(new Triangle(centerDown, bottomLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerUp, centerDown, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 12:
-                triangles.Add(new Triangle(topRight, centerRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerRight, centerLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 5:
-                triangles.Add(new Triangle(topRight, centerRight, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerRight, centerDown, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerDown, bottomLeft, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomLeft, centerLeft, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 10:
-                triangles.Add(new Triangle(centerUp, centerRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerRight, bottomRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomRight, centerDown, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerDown, centerLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            // 3 Point
-
-            case 7:
-                triangles.Add(new Triangle(topRight, bottomRight, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomRight, bottomLeft, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomLeft, centerLeft, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 11:
-                triangles.Add(new Triangle(centerUp, centerRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerRight, bottomRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomRight, bottomLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 13:
-                triangles.Add(new Triangle(topRight, centerRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerRight, centerDown, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerDown, bottomLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 14:
-                triangles.Add(new Triangle(topRight, bottomRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomRight, centerDown, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(centerDown, centerLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                break;
-
-            case 15:
-                triangles.Add(new Triangle(topRight, bottomRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
-                triangles.Add(new Triangle(bottomRight, bottomLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                              
+            case 3:           
+                AddTriangle(new Triangle(bottomRight, bottomLeft, centerRight, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomLeft, centerLeft, centerRight, triangleIndex++, triangleIndex++, triangleIndex++));
+                              
+                break;        
+            case 6:           
+                AddTriangle(new Triangle(topRight, bottomRight, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomRight, centerDown, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 9:           
+                AddTriangle(new Triangle(centerDown, bottomLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerUp, centerDown, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 12:          
+                AddTriangle(new Triangle(topRight, centerRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerRight, centerLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 5:           
+                AddTriangle(new Triangle(topRight, centerRight, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerRight, centerDown, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerDown, bottomLeft, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomLeft, centerLeft, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 10:          
+                AddTriangle(new Triangle(centerUp, centerRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerRight, bottomRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomRight, centerDown, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerDown, centerLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            // 3 Point        
+                              
+            case 7:           
+                AddTriangle(new Triangle(topRight, bottomRight, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomRight, bottomLeft, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomLeft, centerLeft, centerUp, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 11:          
+                AddTriangle(new Triangle(centerUp, centerRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerRight, bottomRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomRight, bottomLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 13:          
+                AddTriangle(new Triangle(topRight, centerRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerRight, centerDown, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerDown, bottomLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 14:          
+                AddTriangle(new Triangle(topRight, bottomRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomRight, centerDown, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(centerDown, centerLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                break;        
+                              
+            case 15:          
+                AddTriangle(new Triangle(topRight, bottomRight, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
+                AddTriangle(new Triangle(bottomRight, bottomLeft, topLeft, triangleIndex++, triangleIndex++, triangleIndex++));
                 break;
                 #endregion
         }
+    }
+
+    private void AddTriangle(Triangle tri)
+    {
+        //if (triangles.Contains(tri)) return;
+        triangles.Add(tri);
     }
 
     private void SetMesh()
@@ -246,14 +330,18 @@ public class WorldArray : MonoBehaviour
         return a * 8 + b * 4 + c * 2 + d * 1;
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        foreach (Vertex v in mapFloor)
-        {
-            Gizmos.color = Color.black + Color.white * v.Data;
-            Gizmos.DrawCube(v.Position, Vector3.one / 5);
-        }
-    }
+    #endregion
+
+    //private void OnDrawGizmosSelected()
+    //{
+    //    if (!hasStarted) return;
+
+    //    foreach (Vertex v in mapFloor)
+    //    {
+    //        Gizmos.color = Color.black + Color.white * v.Data;
+    //        Gizmos.DrawCube(v.Position, Vector3.one / 5);
+    //    }
+    //}
 
     private void OnDrawGizmos()
     {
