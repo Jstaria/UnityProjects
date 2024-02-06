@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Map : MonoBehaviour
 {
@@ -10,13 +11,12 @@ public class Map : MonoBehaviour
     void Start()
     {
         board = new Board();
-        board.GenerateBoard(6, 5, 1, transform.position);
+        board.GenerateBoard(16, 12, 1, transform.position);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void GetInput()
     {
-        
+        Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     private void OnDrawGizmos()

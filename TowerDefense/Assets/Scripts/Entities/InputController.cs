@@ -9,6 +9,7 @@ public class InputController : MonoBehaviour
     [SerializeField] private MovementController movCon;
 
     private Vector3 inputDir;
+    
 
     // Update is called once per frame
     public void OnMove(InputAction.CallbackContext context)

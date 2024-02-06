@@ -6,6 +6,7 @@ public class Board
 {
     private BoardPiece[,] boardPieces;
     private Vector2 position;
+    private Vector2 offsetOffset;
 
     public BoardPiece[,] BoardPieces { get { return boardPieces; } }
 
@@ -13,7 +14,7 @@ public class Board
     {
         boardPieces = new BoardPiece[width, height];
         this.position = position;
-        Vector2 offsetOffset = Vector2.zero;
+        offsetOffset = Vector2.zero;
 
         if (width % 2 == 0) { offsetOffset.x = .5f; }
         if (height % 2 == 0) { offsetOffset.y = .5f; }
