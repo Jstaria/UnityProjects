@@ -13,6 +13,7 @@ public class PlacementInput : MonoBehaviour
 
     private Vector3 lastPosition;
 
+    // Tracks the mouse and keyboard input to invoke events
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -26,9 +27,17 @@ public class PlacementInput : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns if cursor is over our ui
+    /// </summary>
+    /// <returns></returns>
     public bool IsPointerOverUI()
         => EventSystem.current.IsPointerOverGameObject();
 
+    /// <summary>
+    /// Returns the last position of the mouse over our grid
+    /// </summary>
+    /// <returns></returns>
     public Vector3 GetSelectedMapPosition()
     {
         Vector3 mousePos = Input.mousePosition;

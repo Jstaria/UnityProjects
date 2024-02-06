@@ -7,6 +7,14 @@ public class GridData
 {
     Dictionary<Vector3Int, PlacementData> placedObj = new();
 
+    /// <summary>
+    /// Add object at specified positions
+    /// </summary>
+    /// <param name="gridPosition"></param>
+    /// <param name="objSize"></param>
+    /// <param name="ID"></param>
+    /// <param name="objectIndex"></param>
+    /// <exception cref="Exception">Will not place if there is already an object here</exception>
     public void AddObjectAt(Vector3Int gridPosition, Vector2Int objSize, int ID, int objectIndex)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objSize);
@@ -23,6 +31,12 @@ public class GridData
         }
     }
 
+    /// <summary>
+    /// Returns total positions of object x by y grid spots
+    /// </summary>
+    /// <param name="gridPosition"></param>
+    /// <param name="objSize"></param>
+    /// <returns></returns>
     private List<Vector3Int> CalculatePositions(Vector3Int gridPosition, Vector2Int objSize)
     {
         List<Vector3Int> returnVal = new();
@@ -31,13 +45,19 @@ public class GridData
         {
             for (int y = 0; y < objSize.y; y++)
             {
-                returnVal.Add(gridPosition + new Vector3Int(x, 0, y));
+                returnVal.Add(gridPosition + new Vector3Int(x, y, 0));
             }
         }
 
         return returnVal;
     }
 
+    /// <summary>
+    /// Returns if you can place object at a position via the dict of grid positions
+    /// </summary>
+    /// <param name="gridPosition"></param>
+    /// <param name="objSize"></param>
+    /// <returns></returns>
     public bool CanPlaceObjAt(Vector3Int gridPosition, Vector2Int objSize)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objSize);

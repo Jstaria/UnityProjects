@@ -26,6 +26,10 @@ public class PlacementSystem : MonoBehaviour
         previewRenderer = cellIndicator.GetComponentInChildren<Renderer>();
     }
 
+    /// <summary>
+    /// Starts build mode on the grid
+    /// </summary>
+    /// <param name="ID"></param>
     public void StartPlacement(int ID)
     {
         Debug.Log("Was Clicked");
@@ -41,6 +45,9 @@ public class PlacementSystem : MonoBehaviour
         inputMan.OnExit += StopPlacement;
     }
 
+    /// <summary>
+    /// Places structure at current grid coordinates if that placement is valid
+    /// </summary>
     private void PlaceStructure()
     {
         if (inputMan.IsPointerOverUI()) return;
@@ -65,6 +72,12 @@ public class PlacementSystem : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Returns if the selected grid position already has objects in it
+    /// </summary>
+    /// <param name="gridPosition"></param>
+    /// <param name="selectedObjIndex"></param>
+    /// <returns></returns>
     private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjIndex)
     {
         GridData selectedData = objData;
@@ -72,6 +85,9 @@ public class PlacementSystem : MonoBehaviour
         return selectedData.CanPlaceObjAt(gridPosition, database.objectsData[selectedObjIndex].Size);
     }
 
+    /// <summary>
+    /// Exits build mode
+    /// </summary>
     private void StopPlacement()
     {
         selectedObjIndex = -1;

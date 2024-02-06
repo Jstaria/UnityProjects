@@ -3,12 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// List of our objects with data
+/// </summary>
 [CreateAssetMenu]
 public class ObjectsDatabaseSO : ScriptableObject
 {
     public List<ObjectData> objectsData;
 }
 
+/// <summary>
+/// Holds the Name, ID, Size, and Object data
+/// </summary>
 [Serializable]
 public class ObjectData
 {
