@@ -1218,6 +1218,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 544544482}
   m_CullTransparentMesh: 1
+--- !u!1 &616238676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 616238678}
+  - component: {fileID: 616238677}
+  m_Layer: 0
+  m_Name: PreviewSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &616238677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616238676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c060df29817bb324f940033444fb76e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  previewOffset: 0.06
+  cellIndicator: {fileID: 1714218437}
+  previewMaterialPrefab: {fileID: 2100000, guid: 6f278115291c0a749b6df2b1ac3a1b03, type: 2}
+--- !u!4 &616238678
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616238676}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1877852957}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &677058537
 GameObject:
   m_ObjectHideFlags: 0
@@ -1613,11 +1660,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseIndicator: {fileID: 1276337113}
-  cellIndicator: {fileID: 1714218437}
   inputMan: {fileID: 152486175}
   grid: {fileID: 1876156537}
   database: {fileID: 11400000, guid: 969424db689ec5846a229fb3030fb0dd, type: 2}
   gridVisual: {fileID: 1556540405}
+  preview: {fileID: 616238677}
 --- !u!1 &1310788983
 GameObject:
   m_ObjectHideFlags: 0
@@ -2228,6 +2275,7 @@ Transform:
   - {fileID: 1296417732}
   - {fileID: 1276337114}
   - {fileID: 809268312}
+  - {fileID: 616238678}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
