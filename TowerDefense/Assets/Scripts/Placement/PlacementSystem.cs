@@ -12,7 +12,7 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private ObjectsDatabaseSO database;
     [SerializeField] private GameObject gridVisual;
 
-    private GridData objData;
+    private GridData gridData;
 
     [SerializeField] private PreviewSystem preview;
     private Vector3Int lastDetectedPos = Vector3Int.zero;
@@ -25,7 +25,7 @@ public class PlacementSystem : MonoBehaviour
     {
         StopPlacement();
 
-        objData = new GridData();
+        gridData = new GridData();
     }
 
     /// <summary>
@@ -39,7 +39,18 @@ public class PlacementSystem : MonoBehaviour
 
         gridVisual.SetActive(true);
 
-        buildingState = new PlacementState(ID, grid, preview, database, objData, objectPlacer);
+        buildingState = new PlacementState(ID, grid, preview, database, gridData, objectPlacer);
+
+        inputMan.OnClicked += PlaceStructure;
+        inputMan.OnExit += StopPlacement;
+    }
+
+    public void StartRemoving()
+    {
+        StopPlacement();
+
+        gridVisual.SetActive(true);
+        buildingState = new RemovingState(grid, preview, gridData, objectPlacer);
 
         inputMan.OnClicked += PlaceStructure;
         inputMan.OnExit += StopPlacement;
