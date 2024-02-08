@@ -75,12 +75,22 @@ public class GridData
 
     public int GetRepresentationIndex(Vector3Int gridPosition)
     {
-        if (placedObj.ContainsKey(gridPosition) == false)
+        if (!placedObj.ContainsKey(gridPosition))
         {
             return -1;
         }
 
         return placedObj[gridPosition].PlacedObjectIndex;
+    }
+
+    public int GetDatabaseIndex(Vector3Int gridPosition)
+    {
+        if (!placedObj.ContainsKey(gridPosition))
+        {
+            return -1;
+        }
+
+        return placedObj[gridPosition].ID;
     }
 
     internal void RemoveObjectAt(Vector3Int gridPosition)

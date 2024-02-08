@@ -11,8 +11,9 @@ public class PlacementState : IBuildingState
     private ObjectsDatabaseSO database;
     private GridData gridData;
     private ObjectPlacer objectPlacer;
+    private BankSystem bank;
 
-    public PlacementState(int ID, Grid grid, PreviewSystem previewSystem, ObjectsDatabaseSO database, GridData gridData, ObjectPlacer objectPlacer)
+    public PlacementState(int ID, Grid grid, PreviewSystem previewSystem, ObjectsDatabaseSO database, GridData gridData, ObjectPlacer objectPlacer, BankSystem bank)
     {
         this.ID = ID;
         this.grid = grid;
@@ -20,14 +21,16 @@ public class PlacementState : IBuildingState
         this.database = database;
         this.gridData = gridData;
         this.objectPlacer = objectPlacer;
+        this.bank = bank;
 
         selectedObjectIndex = database.objectsData.FindIndex(data => data.ID == ID);
-
+        
         if (selectedObjectIndex > -1)
         {
             previewSystem.StartShowingPlacementPreview(
             database.objectsData[selectedObjectIndex].Prefab,
             database.objectsData[selectedObjectIndex].Size);
+
         }
         else throw new System.Exception($"No object with ID {ID}");
     }
@@ -39,7 +42,8 @@ public class PlacementState : IBuildingState
 
     public void OnAction(Vector3Int gridPosition)
     {
-        bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex);
+        int withdrawalAmount = database.objectsData[selectedObjectIndex].Cost;
+        bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex) && bank.CheckWithdrawalValidity(withdrawalAmount);
 
         if (!placementValidity) return;
 
@@ -50,6 +54,8 @@ public class PlacementState : IBuildingState
             database.objectsData[selectedObjectIndex].Size,
             database.objectsData[selectedObjectIndex].ID,
             index);
+
+        bank.WithdrawPoints(withdrawalAmount);
 
         previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
     }

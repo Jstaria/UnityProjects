@@ -12,8 +12,26 @@ public class ObjectPlacer : MonoBehaviour
         GameObject newObject = Instantiate(prefab);
 
         newObject.transform.position = position;
-        placedGameObjects.Add(newObject);
-        return placedGameObjects.Count - 1;
+
+        bool foundNull = false;
+        int index = placedGameObjects.Count;
+
+        for (int i = 0; i < placedGameObjects.Count; i++)
+        {
+            if (placedGameObjects[i] != null) continue;
+
+            placedGameObjects[i] = newObject;
+            index = i;
+            foundNull = true;
+            break;
+        }
+
+        if (!foundNull) 
+        { 
+            placedGameObjects.Add(newObject);
+        }
+        
+        return index;
     }
 
     internal void RemoveObjectAt(int gameObjectIndex)
@@ -21,6 +39,16 @@ public class ObjectPlacer : MonoBehaviour
         if (placedGameObjects.Count <= gameObjectIndex || placedGameObjects[gameObjectIndex] == null) return;
 
         Destroy(placedGameObjects[gameObjectIndex]);
-        //placedGameObjects.RemoveAt(gameObjectIndex);
+
+        for (int i = placedGameObjects.Count - 1; i > 0; i--)
+        {
+            if (placedGameObjects[i] == null)
+            {
+                placedGameObjects.RemoveAt(i);
+            } 
+            else { return; }
+        }
+
+        if (placedGameObjects.Count == 1) { placedGameObjects.Clear(); return; }
     }
 }

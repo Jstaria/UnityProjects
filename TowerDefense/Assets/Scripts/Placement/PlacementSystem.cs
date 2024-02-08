@@ -12,6 +12,8 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private ObjectsDatabaseSO database;
     [SerializeField] private GameObject gridVisual;
 
+    [SerializeField] private BankSystem bank;
+
     private GridData gridData;
 
     [SerializeField] private PreviewSystem preview;
@@ -39,7 +41,7 @@ public class PlacementSystem : MonoBehaviour
 
         gridVisual.SetActive(true);
 
-        buildingState = new PlacementState(ID, grid, preview, database, gridData, objectPlacer);
+        buildingState = new PlacementState(ID, grid, preview, database, gridData, objectPlacer, bank);
 
         inputMan.OnClicked += PlaceStructure;
         inputMan.OnExit += StopPlacement;
@@ -50,7 +52,7 @@ public class PlacementSystem : MonoBehaviour
         StopPlacement();
 
         gridVisual.SetActive(true);
-        buildingState = new RemovingState(grid, preview, gridData, objectPlacer);
+        buildingState = new RemovingState(grid, preview, database, gridData, objectPlacer, bank);
 
         inputMan.OnClicked += PlaceStructure;
         inputMan.OnExit += StopPlacement;
