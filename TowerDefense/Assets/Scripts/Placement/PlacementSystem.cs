@@ -13,6 +13,7 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private GameObject gridVisual;
 
     [SerializeField] private BankSystem bank;
+    [SerializeField] private Board board;
 
     private GridData gridData;
 
@@ -28,6 +29,7 @@ public class PlacementSystem : MonoBehaviour
         StopPlacement();
 
         gridData = new GridData();
+        board.GenerateBoard(gridData);
     }
 
     /// <summary>

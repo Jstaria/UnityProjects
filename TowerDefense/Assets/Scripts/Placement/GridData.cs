@@ -93,11 +93,20 @@ public class GridData
         return placedObj[gridPosition].ID;
     }
 
-    internal void RemoveObjectAt(Vector3Int gridPosition)
+    public void RemoveObjectAt(Vector3Int gridPosition)
     {
         foreach (Vector3Int pos in placedObj[gridPosition].occupiedPositions)
         {
             placedObj.Remove(pos);
+        }
+    }
+
+    public void SetPathObjects(List<Vector3Int> positions)
+    {
+        foreach (Vector3Int pos in positions)
+        {
+            List<Vector3Int> posi = new List<Vector3Int> { pos };
+            placedObj.Add(pos, new PlacementData(posi, 3, placedObj.Count - 1));
         }
     }
 }

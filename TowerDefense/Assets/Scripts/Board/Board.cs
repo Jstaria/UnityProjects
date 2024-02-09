@@ -10,6 +10,7 @@ public class Board : MonoBehaviour
     [SerializeField] private Grid grid;
     [SerializeField] private Tilemap tileMap;
     [SerializeField] private TileDatabase tileDatabase;
+    private GridData gridData;
 
     [SerializeField] private int width;
     [SerializeField] private int height;
@@ -22,6 +23,8 @@ public class Board : MonoBehaviour
 
     [SerializeField] private float nodeCount = 0;
 
+    public List<Vector3Int> TilePositions { get; private set; } = new List<Vector3Int>();
+
     private void Start()
     {
         Vector3 scale = new Vector3(width * .1f, 1, height * .1f);
@@ -32,12 +35,11 @@ public class Board : MonoBehaviour
 
         gridVisual.transform.position += offset;
         //gridPlane.transform.position += offset;
-
-        GenerateBoard();
     }
 
-    public void GenerateBoard()
+    public void GenerateBoard(GridData gridData)
     {
+        this.gridData = gridData;
         startingTilePos = new Vector2Int(-width / 2, -height / 2); 
 
         for (int i = startingTilePos.x; i < width / 2; i++)
@@ -136,6 +138,11 @@ public class Board : MonoBehaviour
                 {
                     Vector3Int position = new Vector3Int(currentNode.Position.x + (i * stepX), currentNode.Position.z);
                     tileMap.SetTile(position, tileDatabase.tilesData[0].Tile);
+
+                    if (!TilePositions.Contains(position))
+                    {
+                        TilePositions.Add(position);
+                    }
                 }
             }
             else if (directionScaled.z != 0)
@@ -144,12 +151,18 @@ public class Board : MonoBehaviour
                 {
                     Vector3Int position = new Vector3Int(currentNode.Position.x, currentNode.Position.z + (i * stepZ));
                     tileMap.SetTile(position, tileDatabase.tilesData[0].Tile);
+
+                    if (!TilePositions.Contains(position))
+                    {
+                        TilePositions.Add(position);
+                    }
                 }
             }
 
-
             currentNode = currentNode.NextNode;
         }
+
+        gridData.SetPathObjects(TilePositions);
     }
 
     private bool CheckPositionValidity(Vector3Int nextPosition, Vector3Int currentPosition, Vector3Int direction, int scale, int nodeCount)
