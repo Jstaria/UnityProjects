@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class Board : MonoBehaviour
 {
@@ -14,9 +16,10 @@ public class Board : MonoBehaviour
     [SerializeField] private GameObject gridVisual;
 
     private TileNode rootNode;
+    private TileNode endNode;
+    private int currentNodeCount = 1;
     private Vector2Int startingTilePos;
 
-    private float currentNode = 0;
     [SerializeField] private float nodeCount = 0;
 
     private void Start()
@@ -56,6 +59,7 @@ public class Board : MonoBehaviour
         int startingY = Random.Range(startingTilePos.y + 2, height / 2 - 2);
 
         rootNode = new TileNode(new Vector3Int(startingX, 0, startingY), null);
+        currentNodeCount = 1;
 
         TileNode currentNode = rootNode;
 
@@ -82,18 +86,24 @@ public class Board : MonoBehaviour
             }
 
             int stuckCount = 0;
-
-            while (!CheckPositionValidity(currentNode.Position + direction * numberOfTilesInDir) || direction == -prevDir)
+            int totalStuck = 0;
+            while (!CheckPositionValidity(currentNode.Position + direction * numberOfTilesInDir, currentNode.Position, direction, numberOfTilesInDir, currentNodeCount) 
+                || direction == -prevDir)
             {
                 if (stuckCount < 4 || numberOfTilesInDir > 1)
                 {
                     numberOfTilesInDir--;
                     stuckCount++;
                 }
+                else if (totalStuck > 20)
+                {
+                    return;
+                }
                 else
                 {
                     numberOfTilesInDir = Random.Range(3, 15);
                     direction = directions[Random.Range(0, directions.Length)];
+                    totalStuck++;
                 }
                 
             }
@@ -102,6 +112,8 @@ public class Board : MonoBehaviour
 
             currentNode.NextNode = tempNode;
             currentNode = tempNode;
+            currentNodeCount++;
+            endNode = tempNode;
             prevDir = direction;
         }
 
@@ -113,59 +125,105 @@ public class Board : MonoBehaviour
 
         while (currentNode.NextNode != null)
         {
-            Vector3Int DirectionScaled = currentNode.NextNode.Position - currentNode.Position;
+            Vector3Int directionScaled = currentNode.NextNode.Position - currentNode.Position;
 
-            if (DirectionScaled.x > 0 || DirectionScaled.z > 0)
+            int stepX = (directionScaled.x > 0 ? 1 : -1);
+            int stepZ = (directionScaled.z > 0 ? 1 : -1);
+
+            if (directionScaled.x != 0)
             {
-                if (DirectionScaled.x == 0)
+                for (int i = 0; i < Mathf.Abs(directionScaled.x); i++)
                 {
-                    for (int i = 0; i < DirectionScaled.z; i++)
-                    {
-                        tileMap.SetTile(new Vector3Int(currentNode.Position.x, currentNode.Position.z) + new Vector3Int(0, i), tileDatabase.tilesData[0].Tile);
-                    }
-                }
-                if (DirectionScaled.z == 0)
-                {
-                    for (int i = 0; i < DirectionScaled.x; i++)
-                    {
-                        tileMap.SetTile(new Vector3Int(currentNode.Position.x, currentNode.Position.z) + new Vector3Int(i, 0), tileDatabase.tilesData[0].Tile);
-                    }
+                    Vector3Int position = new Vector3Int(currentNode.Position.x + (i * stepX), currentNode.Position.z);
+                    tileMap.SetTile(position, tileDatabase.tilesData[0].Tile);
                 }
             }
-            else
+            else if (directionScaled.z != 0)
             {
-                if (DirectionScaled.x == 0)
+                for (int i = 0; i < Mathf.Abs(directionScaled.z); i++)
                 {
-                    for (int i = 0; i < Mathf.Abs(DirectionScaled.z); i++)
-                    {
-                        tileMap.SetTile(new Vector3Int(currentNode.Position.x, currentNode.Position.z) - new Vector3Int(0, i), tileDatabase.tilesData[0].Tile);
-                    }
-                }
-                if (DirectionScaled.z == 0)
-                {
-                    for (int i = 0; i < Mathf.Abs(DirectionScaled.x); i++)
-                    {
-                        tileMap.SetTile(new Vector3Int(currentNode.Position.x, currentNode.Position.z) - new Vector3Int(i, 0), tileDatabase.tilesData[0].Tile);
-                    }
+                    Vector3Int position = new Vector3Int(currentNode.Position.x, currentNode.Position.z + (i * stepZ));
+                    tileMap.SetTile(position, tileDatabase.tilesData[0].Tile);
                 }
             }
-            
+
 
             currentNode = currentNode.NextNode;
         }
     }
 
-    private bool CheckPositionValidity(Vector3Int position)
+    private bool CheckPositionValidity(Vector3Int nextPosition, Vector3Int currentPosition, Vector3Int direction, int scale, int nodeCount)
     {
-        return 
-            position.x >= startingTilePos.x + 1 && position.z >= startingTilePos.y + 1 &&
-            position.x < width / 2 - 1 && position.z < height / 2 - 1;
+        bool validity = 
+            nextPosition.x >= startingTilePos.x + 1 && nextPosition.z >= startingTilePos.y + 1 &&
+            nextPosition.x < width / 2 - 1 && nextPosition.z < height / 2 - 1 && nextPosition != rootNode.Position;
+
+        if (nodeCount == this.nodeCount - 1)
+        {
+            TileNode tempNode = rootNode;
+
+            while (tempNode != null)
+            {
+                TileNode tempNode1 = rootNode;
+
+                Vector3Int position1 = tempNode.Position;
+
+                while (tempNode1 != null)
+                {
+                    if (tempNode == tempNode1) { tempNode1 = tempNode1.NextNode; continue; }
+
+                    Vector3Int position2 = tempNode1.Position;
+
+                    Vector3Int directionScaled = position2 - position1;
+
+                    int stepX = (directionScaled.x > 0 ? 1 : -1);
+                    int stepZ = (directionScaled.z > 0 ? 1 : -1);
+
+                    if (directionScaled.x != 0)
+                    {
+                        for (int i = 0; i < Mathf.Abs(directionScaled.x); i++)
+                        {
+                            Vector3Int currentPos = new Vector3Int(currentPosition.x + (i * stepX), 0, currentPosition.z);
+
+                            if (nextPosition == currentPos) return false;
+                        }
+                    }
+                    else if (directionScaled.z != 0)
+                    {
+                        for (int i = 0; i < Mathf.Abs(directionScaled.z); i++)
+                        {
+                            Vector3Int currentPos = new Vector3Int(currentPosition.x, 0, currentPosition.z + (i * stepZ));
+
+                            if (nextPosition == currentPos) return false;
+                        }
+                    }
+
+                    tempNode1 = tempNode1.NextNode;
+                }
+
+                tempNode = tempNode.NextNode;
+            }
+        }
+
+        if (nodeCount == 1) return validity;
+
+        for (int i = 0; i < scale; i++)
+        {
+            if (currentPosition + direction * i == rootNode.Position)
+            {
+                return false;
+            }
+            
+        }
+
+        return validity;
     }
 
     private void OnDrawGizmos()
     {
-        currentNode = 0;
+        int currentNode = 0;
         TileNode current = rootNode;
+        Vector3 offset = new Vector3(.5f, 0, .5f);
         while (current != null)
         {
             Gizmos.color = Color.Lerp(Color.red, Color.blue, currentNode / nodeCount);
@@ -179,12 +237,12 @@ public class Board : MonoBehaviour
                 Gizmos.color = Color.blue;
             }
 
-            Gizmos.DrawSphere(current.Position, .5f);
+            Gizmos.DrawSphere(current.Position + offset, .5f);
 
             if (current.NextNode != null)
             {
-                Gizmos.color = Color.Lerp(Color.cyan,Color.magenta, currentNode / nodeCount);
-                Gizmos.DrawLine(current.Position, current.NextNode.Position);
+                Gizmos.color = Color.Lerp(Color.red, Color.blue, currentNode / nodeCount);
+                Gizmos.DrawLine(current.Position + offset, current.NextNode.Position + offset);
             }
 
             currentNode += 1;
