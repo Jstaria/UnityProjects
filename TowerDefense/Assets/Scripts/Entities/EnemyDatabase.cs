@@ -20,5 +20,6 @@ public class EnemyData
     [field: SerializeField] public int ID { get; private set; }
     [field: SerializeField] public GameObject Prefab { get; private set; }
     [field: SerializeField] public int Cost { get; private set; }
+    [field: SerializeField] public int MaxHealth { get; private set; }
 }
 

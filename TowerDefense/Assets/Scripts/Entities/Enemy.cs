@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class Enemy : Agent
 {
+    private int health;
+
+    public int ID { get; private set; }
+    public string Name { get; private set; }
+    public int MaxHealth { get; private set; }
+    public float Speed { get; private set; }
+
+    public void Create(int ID, string Name, int MaxHealth)
+    {
+
+    }
+
     protected override void CalcSteeringForce()
     {
         

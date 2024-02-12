@@ -1775,6 +1775,7 @@ MonoBehaviour:
   grid: {fileID: 1553017900}
   vField: {fileID: 837285230}
   enemyDatabase: {fileID: 11400000, guid: 8559ef11c9b008e4da0432edb6237344, type: 2}
+  outOfBoundsScale: 5
 --- !u!1 &1281632716
 GameObject:
   m_ObjectHideFlags: 0
@@ -2312,7 +2313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1606353728
 Transform:
   m_ObjectHideFlags: 0
