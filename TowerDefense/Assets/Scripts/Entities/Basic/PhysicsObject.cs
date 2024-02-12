@@ -40,7 +40,11 @@ public class PhysicsObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        velocity = Random.insideUnitCircle.normalized;
+        //velocity = Random.insideUnitCircle.normalized;
+        //velocity.z = velocity.y;
+        //velocity.y = 0;
+
+        velocity = new Vector3(.01f, 0, .01f);
 
         position = transform.position;
 

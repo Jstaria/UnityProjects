@@ -23,6 +23,9 @@ public class Board : MonoBehaviour
 
     [SerializeField] private float nodeCount = 0;
 
+    [SerializeField] GridVectorField gridVectorField;
+
+    public Vector3 StartPosition { get { return rootNode.Position + new Vector3(.5f, 0, .5f); }}
     public List<Vector3Int> TilePositions { get; private set; } = new List<Vector3Int>();
 
     private void Start()
@@ -138,6 +141,7 @@ public class Board : MonoBehaviour
                 {
                     Vector3Int position = new Vector3Int(currentNode.Position.x + (i * stepX), currentNode.Position.z);
                     tileMap.SetTile(position, tileDatabase.tilesData[0].Tile);
+                    gridVectorField.SetVector(position, new Vector3Int(stepX, 0, 0));
 
                     if (!TilePositions.Contains(position))
                     {
@@ -152,6 +156,8 @@ public class Board : MonoBehaviour
                     Vector3Int position = new Vector3Int(currentNode.Position.x, currentNode.Position.z + (i * stepZ));
                     tileMap.SetTile(position, tileDatabase.tilesData[0].Tile);
 
+                    gridVectorField.SetVector(position, new Vector3Int(0, 0, stepZ));
+
                     if (!TilePositions.Contains(position))
                     {
                         TilePositions.Add(position);
@@ -163,6 +169,8 @@ public class Board : MonoBehaviour
         }
 
         gridData.SetPathObjects(TilePositions);
+        gridVectorField.SetAdjacentVectors();
+        gridVectorField.Display();
     }
 
     private bool CheckPositionValidity(Vector3Int nextPosition, Vector3Int currentPosition, Vector3Int direction, int scale, int nodeCount)

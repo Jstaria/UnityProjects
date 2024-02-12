@@ -20,11 +20,6 @@ public abstract class Agent : MonoBehaviour
 
     public Vector3 UltimaForce { set { ultimaForce = value; } }
 
-    //public ObstacleManager ObstacleManager { set { obstacleManager = value; } }
-
-    [SerializeField] private BoundsInfo floorBound;
-
-    public BoundsInfo FloorBounds { get { return floorBound; } set { floorBound = value; } }
 
     // Update is called once per frame
     void Update()
@@ -36,7 +31,6 @@ public abstract class Agent : MonoBehaviour
         Vector3.ClampMagnitude(ultimaForce, maxForce);
         phyObj.ApplyForce(ultimaForce);
 
-        //transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, MathF.Sin(phyObj.Direction.y) / MathF.Cos(phyObj.Direction.x));
     }
 
     protected Vector3 Seek(Vector3 targetPos)
@@ -106,54 +100,6 @@ public abstract class Agent : MonoBehaviour
         return phyObj.Velocity * time + transform.position;
     }
 
-    protected Vector3 AvoidObtacles()
-    {
-        foundObstacles.Clear();
-
-        Vector3 totalForce = Vector3.zero;
-
-        // Do Stuff
-        //foreach (Obstacle obstacle in obstacleManager.Obstacles)
-        //{
-        //    // Checks for if I care
-        //    Vector3 agentToObstacle = obstacle.transform.position - transform.position;
-        //    float rightDot = 0, forwardDot = 0;
-
-        //    float dist = Vector3.Distance(transform.position, CalcFuturePosition(avoidTime)) + phyObj.Radius;
-
-        //    forwardDot = Vector3.Dot(phyObj.Direction, agentToObstacle);
-
-        //    if (forwardDot >= -obstacle.Radius)
-        //    {
-        //        if (forwardDot <= dist + obstacle.Radius)
-        //        {
-        //            // How far left and rights
-        //            rightDot = Vector3.Dot(transform.right, agentToObstacle);
-
-        //            Vector3 steeringForce = transform.right * (1 - forwardDot / dist) * 10;
-
-        //            if (Mathf.Abs(rightDot) <= phyObj.Radius + obstacle.Radius)
-        //            {
-        //                // If I care
-        //                foundObstacles.Add(obstacle.transform.position);
-
-        //                // If left
-        //                if (rightDot <= 0)
-        //                    totalForce += steeringForce;
-
-        //                // If Right
-        //                else
-        //                {
-        //                    totalForce -= steeringForce;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        return totalForce;
-    }
-
     public Vector3 StayInBounds(float time, float outerBounds)
     {
         Vector3 position = phyObj.Position;//CalcFuturePosition(time);
@@ -166,23 +112,6 @@ public abstract class Agent : MonoBehaviour
         //    return Seek(Vector3.zero);
         //}
 
-        if (position.x > FloorBounds.xMax - outerBounds)
-        {
-            return Seek(new Vector3(FloorBounds.xMax - outerBounds, transform.position.y));
-        }
-        if (position.x < FloorBounds.xMin + outerBounds)
-        {
-            return Seek(new Vector3(FloorBounds.xMin + outerBounds, transform.position.y));
-        }
-
-        if (position.y > FloorBounds.yMax - outerBounds)
-        {
-            return Seek(new Vector3(transform.position.x, FloorBounds.yMax - outerBounds));
-        }
-        if (position.y < FloorBounds.yMin + outerBounds)
-        {
-            return Seek(new Vector3(transform.position.x, FloorBounds.yMin + outerBounds));
-        }
 
         return Vector3.zero;
     }
