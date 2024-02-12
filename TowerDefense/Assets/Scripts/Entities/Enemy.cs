@@ -11,6 +11,7 @@ public class Enemy : Agent
 
     public void SetForce(Vector3 force)
     {
-        phyObj.ApplyForce(force);
+        //phyObj.ApplyForce(force);
+        phyObj.Velocity = (force);
     }
 }

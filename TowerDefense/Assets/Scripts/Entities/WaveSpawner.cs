@@ -12,18 +12,38 @@ public class WaveSpawner : MonoBehaviour
 
     [SerializeField] private int outOfBoundsScale = 5;
 
+    private List<TileNode> nodes = new();
+
     private void Update()
     {
         if (Input.GetMouseButtonUp(0))
         {
-            enemies.Add(Instantiate(enemyDatabase.enemyData[0].Prefab, board.StartPosition, Quaternion.identity));
+            Vector3 random = new Vector3(Random.Range(-.2f, .2f), 0, Random.Range(-.2f, .2f));
+
+            enemies.Add(Instantiate(enemyDatabase.enemyData[0].Prefab, board.StartPosition + random, Quaternion.identity));
+            nodes.Add(board.Root);
         }
 
-        foreach (GameObject enemy in enemies)
+        for (int i = 0; i < enemies.Count; i++)
         {
-            Vector3Int gridPosition = grid.WorldToCell(enemy.transform.position);
+            GameObject enemy = enemies[i];
+            //Vector3Int gridPosition = grid.WorldToCell(enemy.transform.position);
 
-            Vector3 direction = vField.GetVector(gridPosition) * (vField.PathValues.ContainsKey(new Vector3Int(gridPosition.x, 0, gridPosition.y)) ? 1 : outOfBoundsScale);
+            //Vector3 direction = vField.GetVector(gridPosition) * (vField.PathValues.ContainsKey(new Vector3Int(gridPosition.x, 0, gridPosition.y)) ? 1 : outOfBoundsScale);
+            Vector3 direction = Vector3.zero;
+
+            if (nodes[i].NextNode != null)
+            {
+                direction = ((nodes[i].NextNode.Position - enemy.transform.position)).normalized;
+
+                if (nodes[i].NextNode.IsColliding(enemy.transform.position, .1f))
+                {
+                    if (nodes[i].NextNode != null)
+                    {
+                        nodes[i] = nodes[i].NextNode;
+                    }
+                }
+            }
 
             enemy.GetComponent<Enemy>().SetForce(direction);
         }

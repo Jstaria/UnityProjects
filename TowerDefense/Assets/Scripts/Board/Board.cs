@@ -25,8 +25,9 @@ public class Board : MonoBehaviour
 
     [SerializeField] GridVectorField gridVectorField;
 
-    public Vector3 StartPosition { get { return rootNode.Position + new Vector3(.5f, 0, .5f); }}
+    public Vector3 StartPosition { get { return rootNode.Position; }}
     public List<Vector3Int> TilePositions { get; private set; } = new List<Vector3Int>();
+    public TileNode Root { get { return rootNode; } }
 
     private void Start()
     {
@@ -63,7 +64,7 @@ public class Board : MonoBehaviour
         int startingX = Random.Range(startingTilePos.x + 2, width / 2 - 2);
         int startingY = Random.Range(startingTilePos.y + 2, height / 2 - 2);
 
-        rootNode = new TileNode(new Vector3Int(startingX, 0, startingY), null);
+        rootNode = new TileNode(new Vector3Int(startingX, 0, startingY), null, .1f);
         currentNodeCount = 1;
 
         TileNode currentNode = rootNode;
@@ -92,7 +93,7 @@ public class Board : MonoBehaviour
 
             int stuckCount = 0;
             int totalStuck = 0;
-            while (!CheckPositionValidity(currentNode.Position + direction * numberOfTilesInDir, currentNode.Position, direction, numberOfTilesInDir, currentNodeCount) 
+            while (!CheckPositionValidity(currentNode.BoardPosition + direction * numberOfTilesInDir, currentNode.BoardPosition, direction, numberOfTilesInDir, currentNodeCount) 
                 || direction == -prevDir)
             {
                 if (stuckCount < 4 || numberOfTilesInDir > 1)
@@ -113,7 +114,7 @@ public class Board : MonoBehaviour
                 
             }
 
-            tempNode = new TileNode(currentNode.Position + direction * numberOfTilesInDir, currentNode);
+            tempNode = new TileNode(currentNode.BoardPosition + direction * numberOfTilesInDir, currentNode, .1f);
 
             currentNode.NextNode = tempNode;
             currentNode = tempNode;
@@ -130,7 +131,7 @@ public class Board : MonoBehaviour
 
         while (currentNode.NextNode != null)
         {
-            Vector3Int directionScaled = currentNode.NextNode.Position - currentNode.Position;
+            Vector3Int directionScaled = currentNode.NextNode.BoardPosition - currentNode.BoardPosition;
 
             int stepX = (directionScaled.x > 0 ? 1 : -1);
             int stepZ = (directionScaled.z > 0 ? 1 : -1);
@@ -139,7 +140,7 @@ public class Board : MonoBehaviour
             {
                 for (int i = 0; i < Mathf.Abs(directionScaled.x); i++)
                 {
-                    Vector3Int position = new Vector3Int(currentNode.Position.x + (i * stepX), currentNode.Position.z);
+                    Vector3Int position = new Vector3Int(currentNode.BoardPosition.x + (i * stepX), currentNode.BoardPosition.z);
                     tileMap.SetTile(position, tileDatabase.tilesData[0].Tile);
                     gridVectorField.SetVector(position, new Vector3Int(stepX, 0, 0));
 
@@ -153,7 +154,7 @@ public class Board : MonoBehaviour
             {
                 for (int i = 0; i < Mathf.Abs(directionScaled.z); i++)
                 {
-                    Vector3Int position = new Vector3Int(currentNode.Position.x, currentNode.Position.z + (i * stepZ));
+                    Vector3Int position = new Vector3Int(currentNode.BoardPosition.x, currentNode.BoardPosition.z + (i * stepZ));
                     tileMap.SetTile(position, tileDatabase.tilesData[0].Tile);
 
                     gridVectorField.SetVector(position, new Vector3Int(0, 0, stepZ));
@@ -177,7 +178,7 @@ public class Board : MonoBehaviour
     {
         bool validity = 
             nextPosition.x >= startingTilePos.x + 1 && nextPosition.z >= startingTilePos.y + 1 &&
-            nextPosition.x < width / 2 - 1 && nextPosition.z < height / 2 - 1 && nextPosition != rootNode.Position;
+            nextPosition.x < width / 2 - 1 && nextPosition.z < height / 2 - 1 && nextPosition != rootNode.BoardPosition;
 
         if (nodeCount == this.nodeCount - 1)
         {
@@ -187,13 +188,13 @@ public class Board : MonoBehaviour
             {
                 TileNode tempNode1 = rootNode;
 
-                Vector3Int position1 = tempNode.Position;
+                Vector3Int position1 = tempNode.BoardPosition;
 
                 while (tempNode1 != null)
                 {
                     if (tempNode == tempNode1) { tempNode1 = tempNode1.NextNode; continue; }
 
-                    Vector3Int position2 = tempNode1.Position;
+                    Vector3Int position2 = tempNode1.BoardPosition;
 
                     Vector3Int directionScaled = position2 - position1;
 
@@ -230,7 +231,7 @@ public class Board : MonoBehaviour
 
         for (int i = 0; i < scale; i++)
         {
-            if (currentPosition + direction * i == rootNode.Position)
+            if (currentPosition + direction * i == rootNode.BoardPosition)
             {
                 return false;
             }
@@ -258,12 +259,12 @@ public class Board : MonoBehaviour
                 Gizmos.color = Color.blue;
             }
 
-            Gizmos.DrawSphere(current.Position + offset, .5f);
+            Gizmos.DrawSphere(current.BoardPosition + offset, .5f);
 
             if (current.NextNode != null)
             {
                 Gizmos.color = Color.Lerp(Color.red, Color.blue, currentNode / nodeCount);
-                Gizmos.DrawLine(current.Position + offset, current.NextNode.Position + offset);
+                Gizmos.DrawLine(current.BoardPosition + offset, current.NextNode.BoardPosition + offset);
             }
 
             currentNode += 1;
