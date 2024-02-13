@@ -17,6 +17,9 @@ public class InputController : MonoBehaviour
         // Get value from input system
         inputDir = context.ReadValue<Vector2>();
 
+        inputDir.z = inputDir.y;
+        inputDir.y = 0;
+
         // Send new direction
         movCon.Direction = inputDir;
     }

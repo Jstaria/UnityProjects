@@ -23,7 +23,8 @@ public class Board : MonoBehaviour
 
     [SerializeField] private float nodeCount = 0;
 
-    [SerializeField] GridVectorField gridVectorField;
+    [SerializeField] private GridVectorField gridVectorField;
+    [SerializeField] private BoundsInfo boundsInfo;
 
     public Vector3 StartPosition { get { return rootNode.Position; }}
     public List<Vector3Int> TilePositions { get; private set; } = new List<Vector3Int>();
@@ -39,6 +40,8 @@ public class Board : MonoBehaviour
 
         gridVisual.transform.position += offset;
         //gridPlane.transform.position += offset;
+
+        boundsInfo.SetBounds(width, height);
     }
 
     public void GenerateBoard(GridData gridData)

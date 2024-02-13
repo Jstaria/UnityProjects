@@ -12,7 +12,7 @@ public class GridVectorField : MonoBehaviour
     private Dictionary<Vector3Int, Vector3Int> fieldPositionValues = new();
     private Dictionary<Vector3Int, Vector3Int> pathValues = new();
 
-    [SerializeField] int outOfBoundsScale = 5;
+    //[SerializeField] int outOfBoundsScale = 5;
 
     public Dictionary<Vector3Int, Vector3Int> FieldPositionValues { get { return fieldPositionValues; } }
     public Dictionary<Vector3Int, Vector3Int> PathValues { get { return pathValues; } }

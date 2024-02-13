@@ -10,8 +10,8 @@ public class MovementController : MonoBehaviour
     // direction
     // position
 
-    private Vector2 position;
-    private Vector2 direction;
+    private Vector3 position;
+    private Vector3 direction;
     internal Vector3 Direction { get { return direction; } set { direction = value.normalized; } }
     public Vector3 Position { set { position = value; } }
 
@@ -25,7 +25,7 @@ public class MovementController : MonoBehaviour
     private float totalCamHeight;
     private float totalCamWidth;
 
-    private Vector2 vel;
+    private Vector3 vel;
 
     // Start is called before the first frame update
     void Start()
@@ -54,7 +54,7 @@ public class MovementController : MonoBehaviour
 
         position += vel;
 
-        //RestrictMovement();
+        RestrictMovement();
 
         transform.position = position;
 
@@ -63,17 +63,17 @@ public class MovementController : MonoBehaviour
     private void RestrictMovement()
     {
         position.x = Mathf.Clamp(position.x, floorBounds.xMin + transform.localScale.x / 2, floorBounds.xMax - transform.localScale.x / 2);
-        position.y = Mathf.Clamp(position.y, floorBounds.yMin + transform.localScale.y / 2, floorBounds.yMax - transform.localScale.y / 2);
+        position.z = Mathf.Clamp(position.z, floorBounds.yMin + transform.localScale.y / 2, floorBounds.yMax - transform.localScale.y / 2);
 
-        Vector3 camPos = position;
-
-        float camMinX = floorBounds.xMin + totalCamWidth;
-        float camMaxX = floorBounds.xMax - totalCamWidth;
-        float camMinY = floorBounds.yMin + totalCamHeight;
-        float camMaxY = floorBounds.yMax - totalCamHeight;
-
-        camPos.x = Mathf.Clamp(position.x, camMinX, camMaxX);
-        camPos.y = Mathf.Clamp(position.y, camMinY, camMaxY);
+        //Vector3 camPos = position;
+        //
+        //float camMinX = floorBounds.xMin + totalCamWidth;
+        //float camMaxX = floorBounds.xMax - totalCamWidth;
+        //float camMinY = floorBounds.yMin + totalCamHeight;
+        //float camMaxY = floorBounds.yMax - totalCamHeight;
+        //
+        //camPos.x = Mathf.Clamp(position.x, camMinX, camMaxX);
+        //camPos.y = Mathf.Clamp(position.y, camMinY, camMaxY);
 
         //camCon.UpdateCamPos(camPos);
     }
