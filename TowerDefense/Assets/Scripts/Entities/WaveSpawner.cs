@@ -34,7 +34,7 @@ public class WaveSpawner : MonoBehaviour
 
             if (nodes[i].NextNode != null)
             {
-                direction = ((nodes[i].NextNode.Position - enemy.transform.position)).normalized;
+                direction = ((nodes[i].NextNode.Position - nodes[i].Position)).normalized;
 
                 if (nodes[i].NextNode.IsColliding(enemy.transform.position, .1f))
                 {

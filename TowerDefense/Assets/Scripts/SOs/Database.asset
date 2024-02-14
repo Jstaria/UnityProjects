@@ -41,3 +41,10 @@ MonoBehaviour:
     <Cost>k__BackingField: 0
     <PlaceSound>k__BackingField: {fileID: 0}
     <RemoveSound>k__BackingField: {fileID: 0}
+  - <Name>k__BackingField: BasicTurret
+    <ID>k__BackingField: 4
+    <Size>k__BackingField: {x: 2, y: 2}
+    <Prefab>k__BackingField: {fileID: 3340989700102348876, guid: 7be3f91b70ef0484496fea8e5cccec67, type: 3}
+    <Cost>k__BackingField: 50
+    <PlaceSound>k__BackingField: {fileID: 0}
+    <RemoveSound>k__BackingField: {fileID: 0}
