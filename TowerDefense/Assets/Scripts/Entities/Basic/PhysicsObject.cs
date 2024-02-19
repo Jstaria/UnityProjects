@@ -44,7 +44,7 @@ public class PhysicsObject : MonoBehaviour
         //velocity.z = velocity.y;
         //velocity.y = 0;
 
-        velocity = new Vector3(.01f, 0, .01f);
+        velocity = new Vector3(0, 0, 0);
 
         position = transform.position;
 

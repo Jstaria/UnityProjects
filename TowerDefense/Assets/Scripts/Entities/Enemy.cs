@@ -24,6 +24,6 @@ public class Enemy : Agent
     public void SetForce(Vector3 force)
     {
         //phyObj.ApplyForce(force);
-        phyObj.Velocity = (force);
+        phyObj.Velocity = Vector3.Slerp(phyObj.Velocity, force, .01f);
     }
 }

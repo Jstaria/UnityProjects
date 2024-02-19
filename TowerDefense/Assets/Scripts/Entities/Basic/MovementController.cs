@@ -62,8 +62,8 @@ public class MovementController : MonoBehaviour
 
     private void RestrictMovement()
     {
-        position.x = Mathf.Clamp(position.x, floorBounds.xMin + transform.localScale.x / 2, floorBounds.xMax - transform.localScale.x / 2);
-        position.z = Mathf.Clamp(position.z, floorBounds.yMin + transform.localScale.y / 2, floorBounds.yMax - transform.localScale.y / 2);
+        position.x = Mathf.Clamp(position.x, floorBounds.xMin, floorBounds.xMax - 1);
+        position.z = Mathf.Clamp(position.z, floorBounds.yMin, floorBounds.yMax - 1);
 
         //Vector3 camPos = position;
         //
