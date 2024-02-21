@@ -18,6 +18,7 @@ MonoBehaviour:
     <Size>k__BackingField: {x: 1, y: 1}
     <Prefab>k__BackingField: {fileID: 228389468694832316, guid: 005d1179c522be548bf92c30347d67b4, type: 3}
     <Cost>k__BackingField: 5
+    <ActiveRadius>k__BackingField: 0
     <PlaceSound>k__BackingField: {fileID: 0}
     <RemoveSound>k__BackingField: {fileID: 0}
   - <Name>k__BackingField: 2x1
@@ -25,6 +26,7 @@ MonoBehaviour:
     <Size>k__BackingField: {x: 2, y: 1}
     <Prefab>k__BackingField: {fileID: 8114310396574357261, guid: 4a8b123c0441c1842a2c7f3385618ae1, type: 3}
     <Cost>k__BackingField: 15
+    <ActiveRadius>k__BackingField: 0
     <PlaceSound>k__BackingField: {fileID: 0}
     <RemoveSound>k__BackingField: {fileID: 0}
   - <Name>k__BackingField: 2x2
@@ -32,6 +34,7 @@ MonoBehaviour:
     <Size>k__BackingField: {x: 2, y: 2}
     <Prefab>k__BackingField: {fileID: 2971602747465891400, guid: 464ea3891ee70a143a3a8b78177d23c7, type: 3}
     <Cost>k__BackingField: 45
+    <ActiveRadius>k__BackingField: 0
     <PlaceSound>k__BackingField: {fileID: 0}
     <RemoveSound>k__BackingField: {fileID: 0}
   - <Name>k__BackingField: Path
@@ -39,6 +42,7 @@ MonoBehaviour:
     <Size>k__BackingField: {x: 1, y: 1}
     <Prefab>k__BackingField: {fileID: 0}
     <Cost>k__BackingField: 0
+    <ActiveRadius>k__BackingField: 0
     <PlaceSound>k__BackingField: {fileID: 0}
     <RemoveSound>k__BackingField: {fileID: 0}
   - <Name>k__BackingField: BasicTurret
@@ -46,5 +50,6 @@ MonoBehaviour:
     <Size>k__BackingField: {x: 1, y: 1}
     <Prefab>k__BackingField: {fileID: 3340989700102348876, guid: 7be3f91b70ef0484496fea8e5cccec67, type: 3}
     <Cost>k__BackingField: 50
+    <ActiveRadius>k__BackingField: 5
     <PlaceSound>k__BackingField: {fileID: 0}
     <RemoveSound>k__BackingField: {fileID: 0}

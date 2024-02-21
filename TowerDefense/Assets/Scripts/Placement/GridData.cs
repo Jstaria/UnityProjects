@@ -7,6 +7,8 @@ public class GridData
 {
     Dictionary<Vector3Int, PlacementData> placedObj = new();
 
+    public Dictionary<Vector3Int, PlacementData> PlacedObj { get { return placedObj; } }
+
     /// <summary>
     /// Add object at specified positions
     /// </summary>
@@ -15,10 +17,10 @@ public class GridData
     /// <param name="ID"></param>
     /// <param name="objectIndex"></param>
     /// <exception cref="Exception">Will not place if there is already an object here</exception>
-    public void AddObjectAt(Vector3Int gridPosition, Vector2Int objSize, int ID, int objectIndex)
+    public void AddObjectAt(Vector3Int gridPosition, Vector2Int objSize, int ID, int objectIndex, Tower tower)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objSize);
-        PlacementData data = new PlacementData(positionToOccupy, ID, objectIndex);
+        PlacementData data = new PlacementData(positionToOccupy, ID, objectIndex, tower);
 
         foreach (Vector3Int pos in positionToOccupy)
         {
@@ -117,7 +119,15 @@ public class PlacementData
 
     public int ID { get; private set; }
     public int PlacedObjectIndex { get; private set; }
+    public Tower Tower { get; private set; }
 
+    public PlacementData(List<Vector3Int> occupiedPositions, int iD, int placedObjectIndex, Tower tower)
+    {
+        this.occupiedPositions = occupiedPositions;
+        ID = iD;
+        PlacedObjectIndex = placedObjectIndex;
+        this.Tower = tower;
+    }
     public PlacementData(List<Vector3Int> occupiedPositions, int iD, int placedObjectIndex)
     {
         this.occupiedPositions = occupiedPositions;

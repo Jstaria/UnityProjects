@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WaveSpawner : MonoBehaviour
@@ -13,6 +14,8 @@ public class WaveSpawner : MonoBehaviour
     [SerializeField] private int outOfBoundsScale = 5;
 
     private List<TileNode> nodes = new();
+
+    public List<GameObject > Enemies { get { return enemies; } }
 
     private void Update()
     {

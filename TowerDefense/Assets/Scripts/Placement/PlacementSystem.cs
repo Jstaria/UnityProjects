@@ -15,7 +15,10 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private BankSystem bank;
     [SerializeField] private Board board;
 
-    private GridData gridData;
+    [SerializeField] private WaveSpawner waveSpawner;
+    [SerializeField] private TowerManager towerManager;
+
+    public GridData gridData { get; private set; }
 
     [SerializeField] private PreviewSystem preview;
     private Vector3Int lastDetectedPos = Vector3Int.zero;
@@ -43,7 +46,7 @@ public class PlacementSystem : MonoBehaviour
 
         gridVisual.SetActive(true);
 
-        buildingState = new PlacementState(ID, grid, preview, database, gridData, objectPlacer, bank);
+        buildingState = new PlacementState(ID, grid, preview, database, gridData, objectPlacer, bank, waveSpawner, towerManager);
 
         inputMan.OnClicked += PlaceStructure;
         inputMan.OnExit += StopPlacement;

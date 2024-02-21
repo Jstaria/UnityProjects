@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 72951168}
   - component: {fileID: 72951171}
   - component: {fileID: 72951172}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -585,7 +585,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.3268125, y: 0.39488888}
   m_AnchorMax: {x: 0.79064584, y: 0.5632964}
-  m_AnchoredPosition: {x: -45.000046, y: -212.79688}
+  m_AnchoredPosition: {x: -45.000046, y: -217.6}
   m_SizeDelta: {x: -730, y: -150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &377061371
@@ -1353,6 +1353,8 @@ MonoBehaviour:
   gridVisual: {fileID: 1504826977}
   bank: {fileID: 1031684866}
   board: {fileID: 1281632718}
+  waveSpawner: {fileID: 1260542768}
+  towerManager: {fileID: 1123988339}
   preview: {fileID: 127312267}
   objectPlacer: {fileID: 449748810}
 --- !u!4 &828611309
@@ -1947,6 +1949,51 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &1123988338
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1123988340}
+  - component: {fileID: 1123988339}
+  m_Layer: 0
+  m_Name: TowerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1123988339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123988338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08c5771e3456dd84795d61b4f280d16e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placementSystem: {fileID: 828611308}
+--- !u!4 &1123988340
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123988338}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 155.77753, y: 517.42004, z: -7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1162768646
 GameObject:
   m_ObjectHideFlags: 0
@@ -2875,7 +2922,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1948274462}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6, y: 11, z: -6}
+  m_LocalPosition: {x: -7.5, y: 12, z: -7.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3157,7 +3204,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7862524255521041145}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 1x1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3213,7 +3260,7 @@ GameObject:
   - component: {fileID: 5781766728575546404}
   - component: {fileID: 8591482974361559314}
   - component: {fileID: 7901781992226165184}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,8 +12,10 @@ public class PlacementState : IBuildingState
     private GridData gridData;
     private ObjectPlacer objectPlacer;
     private BankSystem bank;
+    private WaveSpawner waveSpawner;
+    private TowerManager towerManager;
 
-    public PlacementState(int ID, Grid grid, PreviewSystem previewSystem, ObjectsDatabaseSO database, GridData gridData, ObjectPlacer objectPlacer, BankSystem bank)
+    public PlacementState(int ID, Grid grid, PreviewSystem previewSystem, ObjectsDatabaseSO database, GridData gridData, ObjectPlacer objectPlacer, BankSystem bank, WaveSpawner waveSpawner, TowerManager towerManager)
     {
         this.ID = ID;
         this.grid = grid;
@@ -22,6 +24,8 @@ public class PlacementState : IBuildingState
         this.gridData = gridData;
         this.objectPlacer = objectPlacer;
         this.bank = bank;
+        this.waveSpawner = waveSpawner;
+        this.towerManager = towerManager;
 
         selectedObjectIndex = database.objectsData.FindIndex(data => data.ID == ID);
         
@@ -50,10 +54,14 @@ public class PlacementState : IBuildingState
         int index = objectPlacer.PlaceObject(database.objectsData[selectedObjectIndex].Prefab, grid.CellToWorld(gridPosition));
 
         GridData selectedData = gridData;
+
+        Tower newTower = new Tower(selectedObjectIndex, database.objectsData[selectedObjectIndex].Prefab.transform.Find("Head").gameObject, waveSpawner, database.objectsData[selectedObjectIndex].ActiveRadius);
+
         selectedData.AddObjectAt(gridPosition,
             database.objectsData[selectedObjectIndex].Size,
             database.objectsData[selectedObjectIndex].ID,
-            index);
+            index,
+            newTower);
 
         bank.WithdrawPoints(withdrawalAmount);
 
