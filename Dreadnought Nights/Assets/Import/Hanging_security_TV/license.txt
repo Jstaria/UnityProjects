@@ -1,0 +1,8 @@
+Model Information:
+* title:	Hanging security TV
+* source:	https://sketchfab.com/3d-models/hanging-security-tv-081a29a9cd2943cfb9b664e04addd81f
+* author:	Sousinho (https://sketchfab.com/sousinho)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

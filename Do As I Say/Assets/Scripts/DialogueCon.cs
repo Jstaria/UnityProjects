@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,17 +13,17 @@ public class DialogueCon : MonoBehaviour
     [SerializeField] private RectTransform panelTransform;
     [SerializeField] private TextMeshProUGUI text;
 
-    [SerializeField] private AudioClip speechAudio;
+    private AudioClip speechAudio;
     [SerializeField] private AudioSource speechSource;
     [SerializeField] private AudioSource speechSource2;
     [SerializeField] private float dialogueCooldown = .1f;
     [SerializeField] private float dialogueCDFlux = .05f;
     [SerializeField] private float maxPitchFlux = .5f;
-    [SerializeField] private float textSpeed = .01f;
+
     private float lastDialogueTime;
     private float CD;
     private bool speechSourceSwitch;
-    private string[] textToBeDisplayed = new string[] { "Hi there Stranger!" , "I'm gonna put you \nthrough hell!" };
+    private List<string> textToBeDisplayed = new List<string>() { "Hi there Stranger!" , "I'm gonna put you \nthrough hell!" };
 
     private int index;
 
@@ -35,28 +36,40 @@ public class DialogueCon : MonoBehaviour
     private Vector3 defaultPosition;
     private Vector3 downPosition;
 
+    public AudioClip SpeechAudio 
+    { 
+        get 
+        { 
+            return speechAudio; 
+        } 
+        set 
+        { 
+            speechAudio = value;
+
+            speechSource.clip = speechAudio;
+            speechSource2.clip = speechAudio;
+        } 
+    }
     public bool IsTalking { get; private set; }
 
-    private void Start()
+    public void Start()
     {
         CD = dialogueCooldown;
-        speechSource.clip = speechAudio;
-        speechSource2.clip = speechAudio;
-
+        
         defaultPosition = panelTransform.position;
-        downPosition = panelTransform.position - new Vector3(0, 400);
+        downPosition = panelTransform.position - new Vector3(0, 3.25f);
 
         panelTransform.position = downPosition;
         text.text = string.Empty;
     }
 
-    private void Update()
+    public void Update()
     {
         float blend = 1 - MathF.Pow(.5f, lerpSpeed * Time.deltaTime);
         panelTransform.position = Vector3.Lerp(panelTransform.position, desiredPosition, blend);
     }
 
-    public void StartDialogue(float pitchMod, float CDMod, string[] lines)
+    public void StartDialogue(float pitchMod, float CDMod, List<string> lines)
     {
         textToBeDisplayed = lines;
         index = 0;
@@ -77,10 +90,22 @@ public class DialogueCon : MonoBehaviour
 
     private IEnumerator StartType()
     {
-        foreach (char c in textToBeDisplayed[index].ToCharArray())
+        string displayText = textToBeDisplayed[index];
+
+        for (int i = 0; i < displayText.Length; i++)
         {
-            text.text += c;
-            Speak(pitchMod, CDMod);
+            char c = displayText[i];
+
+            if (displayText[i] == '\\')
+            {
+                text.text += Environment.NewLine;
+            }
+            else
+            {
+                text.text += c;
+                Speak(pitchMod, CDMod);
+            }
+            
             yield return new WaitForSeconds(CD);
         }
     }
@@ -101,7 +126,9 @@ public class DialogueCon : MonoBehaviour
 
     internal bool NextSpeech()
     {
-        if (index >= textToBeDisplayed.Length - 1)
+        StopAllCoroutines();
+
+        if (index >= textToBeDisplayed.Count - 1)
         {
             lerpSpeed = 4f;
             desiredPosition = downPosition;

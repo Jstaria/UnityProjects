@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum MouseState
 {
@@ -14,25 +16,32 @@ public class MouseManager : MonoBehaviour
 {
     [SerializeField] private List<Sprite> mouseSprites;
 
-    GameObject mouseObject;
+    [SerializeField] private GameObject mouseObject;
+    [SerializeField] private float size = .2f;
 
     private MouseState currentState;
     private MouseState prevState;
 
     private float transitionTime;
 
+    private Wiggle wiggle;
+
     private void Start()
     {
         Cursor.visible = false;
-        mouseObject = new GameObject("Cursor", typeof(SpriteRenderer));
+        mouseObject = Instantiate(mouseObject);
         SetMouseState(MouseState.Normal);
         mouseObject.GetComponent<SpriteRenderer>().sortingOrder = 5;
-        mouseObject.transform.localScale = Vector3.one / 5;
+
+        if (mouseObject.TryGetComponent<Wiggle>(out wiggle))
+        {
+            wiggle.OnSquiggle += Squiggle;
+            wiggle.SizeScale = size;
+        }
     }
 
     public void SetMouseState(MouseState state)
     {
-        prevState = currentState;
         currentState = state;
 
         UpdateCursorSprite();
@@ -40,14 +49,31 @@ public class MouseManager : MonoBehaviour
 
     private void UpdateCursorSprite()
     {
-        if (transitionTime > 0 && prevState != currentState) return;
+        if (transitionTime > 0) return;
 
-        transitionTime = .4f;
+        if (prevState != currentState)
+        {
+            transitionTime = .2f;
+        }
+
 
         mouseObject.GetComponent<SpriteRenderer>().sprite = mouseSprites[(int)currentState];
     }
 
-    private void Update()
+    private void Squiggle(float size, float wigMag, float time, float rotMag, float randOffset)
+    {
+        mouseObject.transform.localScale = new Vector3(
+            size + Mathf.Cos(time * Mathf.PI * 2) * wigMag,
+            size + Mathf.Sin(time * Mathf.PI * 2 + randOffset) * wigMag,
+            0);
+        mouseObject.transform.localRotation = Quaternion.Euler(new Vector3(
+            Mathf.Cos(time * Mathf.PI * 2) * rotMag,
+            Mathf.Sin(time * Mathf.PI * 2) * rotMag,
+            Mathf.Cos(time * Mathf.PI * 2 + randOffset) * rotMag));
+
+    }
+
+    public void Update()
     {
         Vector3 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         position.z = -1;
@@ -55,5 +81,11 @@ public class MouseManager : MonoBehaviour
         transitionTime -= Time.deltaTime;
 
         mouseObject.transform.position = position;
+        prevState = currentState;
+
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && wiggle != null)
+        {
+            wiggle.OnClick();
+        } 
     }
 }

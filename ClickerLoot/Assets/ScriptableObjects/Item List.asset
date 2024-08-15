@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d75cdfe9e388e40964ec35fb2e7a39, type: 3}
+  m_Name: Item List
+  m_EditorClassIdentifier: 
+  items:
+  - Name: DefaultCommon
+    Description: Default common item
+    item: {fileID: 4646253529971277277, guid: ff34664e5f23b5146a075c463ff4da0d, type: 3}
+    LootRarity: 0
+    id: 0
+  - Name: DefaultUncommon
+    Description: Default uncommon item
+    item: {fileID: 5118336914280647661, guid: ebe346b520543344d8c58aab91221da4, type: 3}
+    LootRarity: 1
+    id: 1
+  - Name: DefaultRare
+    Description: Default rare item
+    item: {fileID: 4151981421297707359, guid: 1100c4db6154c68478e7244fbb2137d4, type: 3}
+    LootRarity: 2
+    id: 2
+  - Name: DefaultEpic
+    Description: Default epic item
+    item: {fileID: 1306394347735652716, guid: 17bf05b60bcef26419a7315701cb0e1a, type: 3}
+    LootRarity: 3
+    id: 3
+  - Name: DefaultLegendary
+    Description: Default legendary item
+    item: {fileID: 8073848963809798261, guid: a5ba79e3c10479b44bb595fb945311f3, type: 3}
+    LootRarity: 4
+    id: 4
+  - Name: DefaultSona
+    Description: Default sona item
+    item: {fileID: 7782223709053374469, guid: 2a6d4b3b96d7064418e28a0baef1509f, type: 3}
+    LootRarity: 5
+    id: 5
+  - Name: CommonTear
+    Description: Default common item
+    item: {fileID: 8311429390112142142, guid: 1f4cdf5b2fa4fcd4ca14900564030877, type: 3}
+    LootRarity: 0
+    id: 6
+  - Name: UncommonTear
+    Description: Default uncommon item
+    item: {fileID: 290758413097670417, guid: 9249e8732a652734986f0032dd9ee901, type: 3}
+    LootRarity: 1
+    id: 7
+  - Name: RareTear
+    Description: Default rare item
+    item: {fileID: 53996108559302391, guid: 70d72f838aa0da649a27eb4fec2eb876, type: 3}
+    LootRarity: 2
+    id: 8
+  - Name: EpicTear
+    Description: Default epic item
+    item: {fileID: 2193542272487530258, guid: bf2654666a341aa42ace0c510c7f395e, type: 3}
+    LootRarity: 3
+    id: 9
+  - Name: LegendaryTear
+    Description: Default legendary item
+    item: {fileID: 7782223709053374469, guid: 2a6d4b3b96d7064418e28a0baef1509f, type: 3}
+    LootRarity: 4
+    id: 10
+  - Name: SonaTear
+    Description: Default sona item
+    item: {fileID: 5350762139389868895, guid: bff5ea9afbe87c9468bc89a871629bef, type: 3}
+    LootRarity: 5
+    id: 11
