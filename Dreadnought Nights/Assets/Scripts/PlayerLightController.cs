@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ public class PlayerLightController : MonoBehaviour
     public Material M_lightOn;
     public Material M_lightOff;
 
+    public TVScreen screen;
     public Light spotlight;
 
     public AudioManager AudioManager;
@@ -22,6 +24,11 @@ public class PlayerLightController : MonoBehaviour
 
     private void SetLightOff(int light)
     {
+        if (light == 1)
+        {
+            screen.ScreenShadow(false);
+        }
+
         Material[] materials = lightMaterials[light].GetComponent<Renderer>().materials;
         materials[1] = M_lightOff;
         lightMaterials[light].GetComponent<Renderer>().materials = materials;
@@ -66,6 +73,11 @@ public class PlayerLightController : MonoBehaviour
 
     public void TurnOffLight(int light)
     {
+        if (light == 1)
+        {
+            screen.ScreenShadow(false);
+        }
+
         Material[] materials = lightMaterials[light].GetComponent<Renderer>().materials;
         materials[1] = M_lightOff;
         lightMaterials[light].GetComponent<Renderer>().materials = materials;
@@ -78,7 +90,11 @@ public class PlayerLightController : MonoBehaviour
 
     public void TurnOnLight(int light)
     {
-        Debug.Log(light);
+        if (light == 1)
+        {
+            screen.ScreenShadow(true);
+        }
+        //Debug.Log(light);
         Material[] materials = lightMaterials[light].GetComponent<Renderer>().materials;
         materials[1] = M_lightOn;
         lightMaterials[light].GetComponent<Renderer>().materials = materials;
@@ -162,7 +178,7 @@ public class PlayerLightController : MonoBehaviour
 
         light %= playerLights.Count;
 
-        TurnOnLight(light);
+        //TurnOnLight(light);
         TurnOnSpotlight();
 
         GlobalVariables.IsInBlackJackPhase = false;

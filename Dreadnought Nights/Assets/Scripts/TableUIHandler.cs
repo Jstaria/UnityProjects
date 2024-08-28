@@ -31,6 +31,7 @@ public class TableUIHandler : MonoBehaviour
     private float sinceClick;
 
     public AudioManager audioManager;
+    public RayCheck rayCheck;
 
     private void Start()
     {
@@ -70,14 +71,14 @@ public class TableUIHandler : MonoBehaviour
     {
         if (Time.time - sinceClick < .1f) return;
 
-        glowIntensity = CheckMouseOver() ? maxGlowIntensity : minGlowIntensity;
+        glowIntensity = rayCheck.CheckMouseOver() ? maxGlowIntensity : minGlowIntensity;
 
         if (!isActive) glowIntensity = maxGlowIntensity;
     }
 
     private bool CheckMouseClicked()
     {
-        return isActive && Input.GetMouseButtonDown(0) && CheckMouseOver();
+        return isActive && Input.GetMouseButtonDown(0) && rayCheck.CheckMouseOver();
     }
 
     private IEnumerator ChangeActiveState()
@@ -92,28 +93,6 @@ public class TableUIHandler : MonoBehaviour
     private void SetClickTime()
     {
         sinceClick = Time.time;
-    }
-
-    private bool CheckMouseOver()
-    {
-        bool wasHit = false;
-
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = cam.nearClipPlane;
-
-        Ray ray = cam.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, 100, UI))
-        {
-            TableUIHandler UIHandler = hit.collider.GetComponent<TableUIHandler>();
-            if (UIHandler != null && UIHandler == this)
-            {
-                wasHit = true;
-            }
-        }
-
-        return wasHit;
     }
 
     public void BeginStartGlow()

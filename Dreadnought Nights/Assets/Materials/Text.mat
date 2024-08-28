@@ -44,9 +44,9 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _ClippingValue: 0
+    - _ClippingValue: 0.08962407
     - _FireProgression: 100
-    - _Intensity: 5.9999924
+    - _Intensity: 6.3488665
     - _NoiseSize: 99.1
     - _OutlineIntensity: 100
     - _OutlineThickness: 0.05

@@ -61,6 +61,11 @@ public class Dealer : MonoBehaviour
 
     private IEnumerator StartDealer()
     {
+        while (!GlobalVariables.IsGameReadyToStart())
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
         yield return GetBets();
 
         OnBeginDeal.Invoke();
@@ -80,9 +85,9 @@ public class Dealer : MonoBehaviour
 
         OnBettingStart.Invoke();
 
-        while (GlobalVariables.InBettingStage)
+        while (!GlobalVariables.IsGameReadyToStart())
         {
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForNextFrameUnit();
         }
     }
 
@@ -205,6 +210,17 @@ public class Dealer : MonoBehaviour
                 if (currentHand.CheckBust()) currentHand.OnBust.Invoke();
 
                 break;
+        }
+    }
+
+    public void DetermineWins()
+    {
+        for (int i = 0; i < playerHands.Count; i++)
+        {
+            if (playerHands[i].gameObject.GetComponent<IPlayer>().winState == WinState.BlackJack) continue;
+            if (playerHands[i].handValues[0] > 21) playerHands[i].gameObject.GetComponent<IPlayer>().winState = WinState.Lost;
+            else if (playerHands[i].handValues[0] > dealersHand.handValues[0] || dealersHand.handValues[0] > 21) playerHands[i].gameObject.GetComponent<IPlayer>().winState = WinState.Won;
+            else if (playerHands[i].handValues[0] == dealersHand.handValues[0]) playerHands[i].gameObject.GetComponent<IPlayer>().winState = WinState.Tied;
         }
     }
 

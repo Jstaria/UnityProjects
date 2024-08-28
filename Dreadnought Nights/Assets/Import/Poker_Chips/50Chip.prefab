@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 6384456326425086691}
   - component: {fileID: 1868305129189017196}
   - component: {fileID: -7219163537339499795}
+  - component: {fileID: 4561764198731900111}
   m_Layer: 8
   m_Name: 50Chip
   m_TagString: Untagged
@@ -110,7 +111,7 @@ Transform:
   m_GameObject: {fileID: 1322006911001931674}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.0050000004}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.01}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4218837191721334889}
@@ -136,6 +137,9 @@ MonoBehaviour:
   chip:
     serializedVersion: 2
     m_Bits: 256
+  rayCheck: {fileID: 4561764198731900111}
+  isInCooldown: 0
+  isStationary: 0
 --- !u!64 &-7219163537339499795
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -158,6 +162,22 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: a8d1f33bf90c0274782d57f2a79a9bd4, type: 2}
+--- !u!114 &4561764198731900111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322006911001931674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84356d254abeb374ebe0da7658b586db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mask:
+    serializedVersion: 2
+    m_Bits: 256
+  cam: {fileID: 0}
 --- !u!1 &4978256533924563699
 GameObject:
   m_ObjectHideFlags: 0

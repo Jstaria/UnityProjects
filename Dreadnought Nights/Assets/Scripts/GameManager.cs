@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -40,11 +41,14 @@ public class GameManager : MonoBehaviour
 
         while (!GlobalVariables.IsGameReadyToStart())
         {
+            //Debug.Log("IM STUCK");
             yield return new WaitForEndOfFrame();
         }
 
         for (int i = 0; i < players.Count; i++)
         {
+            if (players[i].winState == WinState.BlackJack) continue;
+
             currentPlayerInt = i;
 
             yield return new WaitForSeconds(1);
@@ -66,11 +70,16 @@ public class GameManager : MonoBehaviour
     {
         List<int> ints = new List<int>();
 
+        players[players.Count - 1].winState = WinState.Lost;
+
         for (int i = 0; i < players.Count - 1; i++)
         {
+            players[i].winState = WinState.Lost;
+
             if (players[i].hand.GetHandValue() == 21)
             {
                 ints.Add(i);
+                players[i].winState = WinState.BlackJack;
             }
         }
 
@@ -121,6 +130,8 @@ public class GameManager : MonoBehaviour
         foreach (IPlayer player in players)
         {
             StartCoroutine(player.hand.DeleteHand());
+            if (player.chipBank != null && !(player is DealerAI)) player.chipBank.AddBetWin(player.winState);
+            player.winState = WinState.Lost;
         }
 
         while (!AreAllDecksEmpty())
@@ -145,9 +156,9 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < 3; i++)
         {
-
+            if (players[i].chipBank != null) players[i].chipBank.StartBetting();
         }
-        players[1].chipBank.StartBetting();
+        
     }
 
     public void SetRoundReady()

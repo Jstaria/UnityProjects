@@ -4,6 +4,14 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum WinState
+{
+    BlackJack,
+    Won,
+    Tied,
+    Lost
+}
+
 public abstract class IPlayer : MonoBehaviour
 {
     public UnityEvent OnStartTurn;
@@ -15,6 +23,7 @@ public abstract class IPlayer : MonoBehaviour
 
     public Hand hand;
     public ChipBank chipBank;
+    public WinState winState;
 
     public abstract void MakeDecision(int decision);
 

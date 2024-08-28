@@ -13,45 +13,26 @@ public class Chip : MonoBehaviour
     public Camera cam;
     public LayerMask chip;
 
+    public RayCheck rayCheck;
+
     public bool isInCooldown;
+    public bool isStationary;
 
     private void Awake()
     {
         cam = Camera.main;
         isInCooldown = false;
+        isStationary = true;
     }
 
     public bool CheckMouseClicked()
     {
-        return Input.GetMouseButtonDown(0) && CheckMouseOver() && !isInCooldown;
-    }
-
-    private bool CheckMouseOver()
-    {
-        bool wasHit = false;
-
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = cam.nearClipPlane;
-
-        Ray ray = cam.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-
-        //Debug.Log("Rayed");
-
-        if (Physics.Raycast(ray, out hit, 5, chip))
-        {
-            Chip chip = hit.collider.GetComponent<Chip>();
-            if (chip != null && chip == this)
-            {
-                wasHit = true;
-            }
-        }
-
-        return wasHit;
+        return Input.GetMouseButtonDown(0) && rayCheck.CheckMouseOver() && !isInCooldown;
     }
 
     internal IEnumerator MoveTo(Vector3 position, float startingLerpSpeed, float desiredLerpSpeed)
     {
+        isStationary = false;
         endingPosition = position;
         lerpSpeed = startingLerpSpeed;
         this.desiredLerpSpeed = desiredLerpSpeed;
@@ -66,6 +47,7 @@ public class Chip : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
+        isStationary = true;
         yield return null;
     }
 
