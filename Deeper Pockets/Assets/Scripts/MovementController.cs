@@ -31,8 +31,8 @@ public class MovementController : MonoBehaviour
     void Update()
     {
         vel = direction * speed;
-        animator.SetFloat("XInput", direction.x);
-        animator.SetFloat("YInput", direction.y);
+        animator.SetFloat("XInput", vel.x);
+        animator.SetFloat("YInput", vel.y);
 
         Up.gameObject.SetActive(false);
         Down.gameObject.SetActive(false);
