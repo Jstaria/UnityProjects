@@ -1544,8 +1544,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraLockPoint: {fileID: 33919015}
   cam: {fileID: 519420031}
-  swayAllowance: {x: 5, y: 5}
-  lerpSpeed: 5
+  swayAllowance: {x: 7, y: 7}
+  mouseInfluence: 0.25
+  lerpSpeed: 0.15
 --- !u!1 &569809235
 GameObject:
   m_ObjectHideFlags: 0
