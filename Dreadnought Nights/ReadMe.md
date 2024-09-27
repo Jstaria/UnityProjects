@@ -1,11 +1,11 @@
 # Dreadnought Nights
 
 #### Betting
-![BettingStage](https://i.imgur.com/Lxf6hE2.gif)
+![BettingStage](https://i.imgur.com/b3dGtSg.gif)
 
 #### Player's Turn
-![Player's turn](https://i.imgur.com/XE9yPEG.gif)
+![Player's turn](https://i.imgur.com/i7wKjy1.gif)
 
 #### Dealer's Turn
 (I lost D:)
-![Dealer's Turn](https://i.imgur.com/myw2sYn.gif)
+![Dealer's Turn](https://i.imgur.com/xNqINxQ.gif)
