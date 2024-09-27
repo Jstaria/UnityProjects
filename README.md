@@ -8,7 +8,7 @@
 
 ## ![Deeper Pockets](https://github.com/Jstaria/UnityProjects/blob/main/Deeper%20Pockets/ReadMe.md)
 
-## ![Clicker Loot](https://github.com/Jstaria/UnityProjects/blob/main/ClickerLoot/ReadMe.md)
+## ![Creature Clicker](https://github.com/Jstaria/UnityProjects/blob/main/ClickerLoot/ReadMe.md)
 
 ## ![PS1 Slots](https://github.com/Jstaria/UnityProjects/blob/main/PS1%20Slots/ReadMe.md)
 
