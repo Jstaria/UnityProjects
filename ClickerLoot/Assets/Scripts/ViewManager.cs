@@ -10,6 +10,11 @@ public class ViewManager : Singleton<ViewManager>
 
     private int currentPosition = 2;
 
+    private void Start()
+    {
+        
+    }
+
     public void GoLeft()
     {
         currentPosition = Mathf.Clamp(currentPosition + 1, 1, cam.cameraPositions.Count - 1);
@@ -62,19 +67,3 @@ public class ViewManager : Singleton<ViewManager>
     }
 
 }
-
-#region CamPosList
-[CreateAssetMenu]
-public class CamPosList : ScriptableObject
-{
-    public List<CamPos> cameraPositions;
-}
-
-[Serializable]
-public class CamPos
-{
-    public string Name;
-    public Vector3 Position;
-    public Vector3 Rotation;
-}
-#endregion
