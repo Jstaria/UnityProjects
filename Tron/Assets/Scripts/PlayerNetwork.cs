@@ -1,3 +1,4 @@
+using QFSW.QC;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -20,6 +21,8 @@ public class PlayerNetwork : NetworkBehaviour
 
     [SerializeField] private Transform camera;
     [SerializeField] private Rigidbody rb;
+
+    private float speed = 30;
 
     struct MyData : INetworkSerializable
     {
@@ -79,8 +82,6 @@ public class PlayerNetwork : NetworkBehaviour
         if (Input.GetKey(KeyCode.A)) vel.x = -1f;
         if (Input.GetKey(KeyCode.D)) vel.x = 1f;
 
-        float speed = 10;
-
         rb.velocity += vel.normalized * speed * Time.deltaTime;
     }
 
@@ -97,5 +98,11 @@ public class PlayerNetwork : NetworkBehaviour
     private void TestClientRpc()
     {
         Debug.Log("TestClientRPC");
+    }
+
+    [Command] 
+    private void SetSpeed(float speed)
+    {
+        this.speed = speed;
     }
 }
