@@ -19,6 +19,7 @@ public class PlayerNetwork : NetworkBehaviour
     private Transform spawnedObject;
 
     [SerializeField] private Transform camera;
+    [SerializeField] private Rigidbody rb;
 
     struct MyData : INetworkSerializable
     {
@@ -78,9 +79,9 @@ public class PlayerNetwork : NetworkBehaviour
         if (Input.GetKey(KeyCode.A)) vel.x = -1f;
         if (Input.GetKey(KeyCode.D)) vel.x = 1f;
 
-        float speed = 5;
+        float speed = 10;
 
-        transform.position += vel.normalized * speed * Time.deltaTime;
+        rb.velocity += vel.normalized * speed * Time.deltaTime;
     }
 
     // Clients can use to send to server
