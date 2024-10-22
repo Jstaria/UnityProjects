@@ -39,11 +39,11 @@ public struct tDampedSpringMotionParams
     public float M_velPosCoef, M_velVelCoef;
 }
 
-public class Spring : MonoBehaviour
+public class Spring
 {
     private tDampedSpringMotionParams m_params;
 
-    [SerializeField] private float angularFrequency, dampingRatio;
+    private float angularFrequency, dampingRatio;
     
     public float RestPosition {  get; set; }
     public float Velocity { get => velocity; set => velocity = value; }
@@ -52,12 +52,14 @@ public class Spring : MonoBehaviour
     private float velocity;
     private float position;
 
-    private void Start()
+    public Spring(float angularFrequency, float dampingRatio, float restPosition)
     {
-
+        this.angularFrequency = angularFrequency;
+        this.dampingRatio = dampingRatio;
+        this.RestPosition = restPosition;
     }
 
-    private void Update()
+    public void Update()
     {
         CalcDampedSpringMotionParams(ref m_params, Time.deltaTime, angularFrequency, dampingRatio);
         UpdateDampedSpringMotion(ref position, ref velocity, RestPosition, m_params);
