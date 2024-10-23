@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
+using UnityEngine.Rendering;
 
 public class Vehicle : MonoBehaviour
 {
@@ -20,8 +21,13 @@ public class Vehicle : MonoBehaviour
     [SerializeField] private Rigidbody vehicleBody;
     [SerializeField] private LayerMask ground;
 
+    [SerializeField] private GameObject groundSphere;
+
+    private List<GameObject> groundSpheres;
+
     private void Start()
     {
+        groundSpheres = new List<GameObject>();
         springs = new List<Spring>();
 
         for (int i = 0; i < tires.Count; i++)
@@ -29,6 +35,7 @@ public class Vehicle : MonoBehaviour
             float distance = Vector3.Distance(tireAttachPoints[i].position, tires[i].transform.position);
 
             springs.Add(new Spring(angularVelocity, dampingRatio, distance));
+            groundSpheres.Add(Instantiate(groundSphere, tires[i].transform));
         }
     }
 
@@ -60,6 +67,8 @@ public class Vehicle : MonoBehaviour
                 float velocity = Vector3.Dot(springDir, tireWorldVel);
 
                 float force = (offset * angularVelocity) - (velocity * dampingRatio);
+
+                groundSpheres[i].transform.position = hit.point;
 
                 vehicleBody.AddForceAtPosition(springDir * force, tires[i].transform.position);
             }
