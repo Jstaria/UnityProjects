@@ -9,9 +9,9 @@ public class Vehicle : MonoBehaviour
     [SerializeField] private List<GameObject> tires;
     [SerializeField] private List<Transform> tireAttachPoints;
 
-    private List<Spring> springs;
-
     [SerializeField] private AnimationCurve frictionCurve;
+
+    [Header("Suspension Var")]
 
     [SerializeField] private float angularVelocity;
     [SerializeField] private float dampingRatio;
@@ -23,31 +23,35 @@ public class Vehicle : MonoBehaviour
 
     [SerializeField] private GameObject groundSphere;
 
+    [Header("Wheel Var")]
+    [SerializeField] private float tireGrip;
+    [SerializeField] private float tireMass;
+
+    [SerializeField] private GameObject wheelPrefab;
+
+    private List<GameObject> wheels;
+
     private List<GameObject> groundSpheres;
 
     private void Start()
     {
+        wheels = new List<GameObject>();
         groundSpheres = new List<GameObject>();
-        springs = new List<Spring>();
 
         for (int i = 0; i < tires.Count; i++)
         {
-            float distance = Vector3.Distance(tireAttachPoints[i].position, tires[i].transform.position);
+            //float distance = Vector3.Distance(tireAttachPoints[i].position, tires[i].transform.position);
 
-            springs.Add(new Spring(angularVelocity, dampingRatio, distance));
-            groundSpheres.Add(Instantiate(groundSphere, tires[i].transform));
+            groundSpheres.Add(Instantiate(groundSphere, transform));
+            wheels.Add(Instantiate(wheelPrefab, transform));
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        foreach (Spring spr in springs)
-        {
-            spr.Update();
-        }
-
         UpdateSuspension();
+        UpdateFriction();
     }
 
     private void UpdateSuspension()
@@ -56,6 +60,8 @@ public class Vehicle : MonoBehaviour
         { 
             Ray ray = new Ray(tires[i].transform.position, -tires[i].transform.up);
             RaycastHit hit;
+
+            float distance = wheelRestDistance;
 
             if (Physics.Raycast(ray, out hit, wheelRestDistance, ground))
             {
@@ -68,16 +74,41 @@ public class Vehicle : MonoBehaviour
 
                 float force = (offset * angularVelocity) - (velocity * dampingRatio);
 
-                groundSpheres[i].transform.position = hit.point;
-
                 vehicleBody.AddForceAtPosition(springDir * force, tires[i].transform.position);
+
+                distance = hit.distance;
             }
+
+            groundSpheres[i].transform.position = tires[i].transform.position - tires[i].transform.up * distance;
+            wheels[i].transform.position = tires[i].transform.position - tires[i].transform.up * distance + new Vector3(0, wheels[i].transform.localScale.y * 2);
+
+            //if (wheels[i].transform.position.y < 0.03 + wheels[i].transform.localScale.y * 2) wheels[i].transform.position.Set(wheels[i].transform.position.x, wheels[i].transform.localScale.y * 2, wheels[i].transform.position.z);
         }
     }
 
     private void UpdateFriction()
     {
+        for (int i = 0; i < wheels.Count; i++)
+        {
+            Ray ray = new Ray(tires[i].transform.position, -tires[i].transform.up);
+            RaycastHit hit;
 
+            float distance = wheelRestDistance;
+
+            if (Physics.Raycast(ray, out hit, wheelRestDistance, ground))
+            {
+                Vector3 steeringDir = wheels[i].transform.right;
+                Vector3 tireWorldVel = vehicleBody.GetPointVelocity(wheels[i].transform.position);
+
+                float steeringVel = Vector3.Dot(steeringDir, tireWorldVel);
+
+                float desiredVelChange = -steeringVel * tireGrip;
+
+                float desiredAccel = desiredVelChange / Time.deltaTime;
+
+                vehicleBody.AddForceAtPosition(steeringDir * tireMass * desiredAccel, wheels[i].transform.position);
+            }
+        }
     }
 
     private void UpdateVelocity()
