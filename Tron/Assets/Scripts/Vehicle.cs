@@ -11,6 +11,12 @@ public class Vehicle : MonoBehaviour
 
     [SerializeField] private AnimationCurve frictionCurve;
 
+    [Header("Car Var")]
+    [SerializeField] private float topCarSpeed;
+    private float accelInput;
+
+    [SerializeField] Acceleration acceleration;
+
     [Header("Suspension Var")]
 
     [SerializeField] private float angularVelocity;
@@ -27,6 +33,8 @@ public class Vehicle : MonoBehaviour
     [SerializeField] private float tireGrip;
     [SerializeField] private float tireMass;
 
+    [SerializeField] private Steering steering;
+
     [SerializeField] private GameObject wheelPrefab;
 
     private List<GameObject> wheels;
@@ -35,6 +43,9 @@ public class Vehicle : MonoBehaviour
 
     private void Start()
     {
+        steering.OnSteer += OnSteer;
+        acceleration.OnAccel += OnAccel;
+
         wheels = new List<GameObject>();
         groundSpheres = new List<GameObject>();
 
@@ -47,11 +58,31 @@ public class Vehicle : MonoBehaviour
         }
     }
 
+    private void OnAccel(float accelInput)
+    {
+        this.accelInput = accelInput;
+
+        Debug.Log(accelInput);
+    }
+
+    private void OnSteer(float angle)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            Vector3 rotation = wheels[i].transform.rotation.eulerAngles;
+
+            rotation.y = angle;
+
+            wheels[i].transform.rotation = Quaternion.Euler(rotation);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
         UpdateSuspension();
         UpdateFriction();
+        UpdateVelocity();
     }
 
     private void UpdateSuspension()
@@ -113,6 +144,20 @@ public class Vehicle : MonoBehaviour
 
     private void UpdateVelocity()
     {
+        for (int i = 0; i < 2; i++)
+        {
+            Vector3 accelDir = wheels[i].transform.forward;
 
+            if (accelInput > -1f && accelInput < 1f && accelInput != 0)
+            {
+                float carSpeed = Vector3.Dot(vehicleBody.transform.forward, vehicleBody.velocity);
+
+                float normalizedSpeed = Mathf.Clamp01(Mathf.Abs(carSpeed) / topCarSpeed);
+
+                float availableTorque = .75f * accelInput;
+
+                vehicleBody.AddForce(accelDir * accelInput * topCarSpeed);
+            }
+        }
     }
 }
