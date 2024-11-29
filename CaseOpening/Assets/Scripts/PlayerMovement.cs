@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            float gravityStrength = 9.1f;
+            float gravityStrength = 9.1f * 2;
             forceVelocity.y -= gravityStrength * Time.deltaTime;
         }
 
