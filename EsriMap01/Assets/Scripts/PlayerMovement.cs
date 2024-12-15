@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -9,6 +8,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private CharacterController charCon;
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private LayerMask ground;
+    [SerializeField] private ControlBar conBar;
+    [SerializeField] private Camera cam;
+
+    private float fovNorm = 60;
+    private float fovSprint = 70;
+
+    private float currentFov = 60;
+
+    float time = 2;
 
     private Vector3 velocity, moveDampVelocity, forceVelocity;
     private bool onGround;
@@ -68,9 +76,14 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 moveVector = transform.TransformDirection(PlayerInput);
 
-        bool ctrlPressed = Input.GetKey(KeyCode.LeftControl);
+        bool ctrlPressed = Input.GetKey(KeyCode.LeftControl) && time >= 2;
         float CurrentSpeed = (ctrlPressed) ? playerStats.playerRunSpeed : playerStats.playerWalkSpeed;
 
+        conBar.reduce = ctrlPressed;
+
+        if (conBar.value <= .01f) time = 0;
+
+        time += Time.deltaTime;
 
         velocity = Vector3.SmoothDamp
         (
@@ -79,5 +92,8 @@ public class PlayerMovement : MonoBehaviour
             ref moveDampVelocity,
             playerStats.moveSmoothTime
         );
+
+        currentFov = Mathf.Lerp(currentFov, ctrlPressed ? fovSprint : fovNorm, 10 * Time.deltaTime);
+        cam.fieldOfView = currentFov;
     }
 }
