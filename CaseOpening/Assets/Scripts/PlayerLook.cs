@@ -16,9 +16,26 @@ public class PlayerLook : MonoBehaviour
         Cursor.visible = false;
     }
 
+    private void Start()
+    {
+        XYRotation = transform.localRotation.eulerAngles;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (QuantumConsole.Instance.IsActive)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
         //Cursor.lockState = QuantumConsole.Instance.IsActive ? CursorLockMode.None : CursorLockMode.Locked;
         //Cursor.visible = QuantumConsole.Instance.IsActive;
 

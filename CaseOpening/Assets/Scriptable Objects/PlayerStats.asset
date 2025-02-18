@@ -15,5 +15,10 @@ MonoBehaviour:
   playerWalkSpeed: 10
   playerRunSpeed: 20
   jumpForce: 7
-  moveSmoothTime: 0.1
+  moveSmoothTime: 0.2
   sensitivity: {x: 1, y: 1}
+  interactDistance: 2.5
+  HoverSprite: {fileID: 21300000, guid: 98c6f4bf242b7144db63519684b2906b, type: 3}
+  ClickSprite: {fileID: 21300000, guid: 235ba56fa66513f4c9c518f4048c93aa, type: 3}
+  CursorSprite: {fileID: 21300000, guid: 80ddce2a8eaf32d40a6e1e2bb81154d1, type: 3}
+  clickTimer: 0.1

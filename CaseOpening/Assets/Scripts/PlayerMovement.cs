@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Ray ray = new Ray(transform.position, -transform.up);
 
-        if (Physics.Raycast(ray, 1.1f, ground))
+        if (Physics.Raycast(ray, 1.2f, ground))
         {
             forceVelocity.y = -2f;
             onGround = true;

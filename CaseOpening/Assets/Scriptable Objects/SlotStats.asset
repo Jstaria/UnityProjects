@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec914489f66f60044b9527d6c974edf5, type: 3}
+  m_Name: SlotStats
+  m_EditorClassIdentifier: 
+  angularFrequency: 160
+  dampingRatio: 10
+  angularFrequencyStop: 60
+  dampingRatioStop: 20
+  defaultSpeed: 10
+  spinSpeed: 100
+  numItemsSpawned: 10
+  itemOffset: 6.975
